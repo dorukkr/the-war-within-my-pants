@@ -9,28 +9,6 @@ const io = new IntersectionObserver((entries, obs) => {
 }, { threshold: 0.2 });
 faders.forEach(el => io.observe(el));
 
-/* ===== Scroll progress animation (scale/opacity) ===== */
-window.addEventListener('scroll', () => {
-  document.querySelectorAll('.progress-animate').forEach(el => {
-    const r = el.getBoundingClientRect();
-    const h = window.innerHeight;
-    const start = h * 0.9;
-    const end   = h * 0.1;
-    const p = Math.min(1, Math.max(0, (start - r.top) / (start - end))); // 0..1
-    const scale = 0.85 + p * 0.15;
-    const opacity = 0.3 + p * 0.7;
-    el.style.transform = `scale(${scale}) translateY(${40 * (1-p)}px)`;
-    el.style.opacity = opacity;
-  });
-
-  // subtle parallax for bg sections
-  document.querySelectorAll('.parallax-bg').forEach(sec => {
-    const speed = 0.2;
-    const off = window.scrollY * speed;
-    sec.style.backgroundPosition = `center calc(50% + ${off}px)`;
-  });
-}, { passive:true });
-
 /* ===== HERO: animated starfield canvas ===== */
 (() => {
   const canvas = document.getElementById('bg-canvas');
@@ -107,22 +85,52 @@ window.addEventListener('scroll', () => {
 /* ===== Footer year ===== */
 document.getElementById('year').textContent = new Date().getFullYear();
 
+/* =========================================================
+   SINGLE onScroll handler:
+   - .progress-animate için scale+opacity
+   - .members-image için ÖZEL scale (daha belirgin)
+   - .parallax-bg için arka plan kaydırma
+   ========================================================= */
+function onScroll() {
+  const h = window.innerHeight;
 
-// Scroll progress (scale + opacity) -- Apple vibe
-window.addEventListener('scroll', () => {
+  // 1) Genel progress animasyon (.progress-animate) — members-image hariç
   document.querySelectorAll('.progress-animate').forEach(el => {
+    if (el.classList.contains('members-image')) return; // özel kural altta
     const rect = el.getBoundingClientRect();
-    const h = window.innerHeight;
-
-    // eleman ekranın alt %90'ında devreye girsin, üst %10'unda bitirsin
     const start = h * 0.9;
     const end   = h * 0.1;
-
     const p = Math.min(1, Math.max(0, (start - rect.top) / (start - end))); // 0..1
-    const scale = 0.92 + p * 0.10;   // 0.92x -> 1.02x aralığı (çok nazik)
-    const opacity = 0.55 + p * 0.45; // 0.55 -> 1.0
 
+    const scale   = 0.92 + p * 0.10;   // 0.92x -> 1.02x (nazik)
+    const opacity = 0.55 + p * 0.45;   // 0.55 -> 1.0
     el.style.transform = `scale(${scale}) translateY(${30 * (1 - p)}px)`;
     el.style.opacity = opacity;
   });
-}, { passive: true });
+
+  // 2) Members görseli için ÖZEL progress (biraz daha belirgin)
+  const membersImg = document.querySelector('.members-image');
+  if (membersImg) {
+    const r = membersImg.getBoundingClientRect();
+    const start = h * 0.95;  // ekrana girerken başlasın
+    const end   = h * 0.15;  // üste yaklaşırken bitsin
+    const p = Math.min(1, Math.max(0, (start - r.top) / (start - end)));
+
+    // Daha “vurgulu” bir aralık: 0.90x -> 1.05x
+    const mScale   = 0.90 + p * 0.15;
+    const mOpacity = 0.60 + p * 0.40;
+    membersImg.style.transform = `scale(${mScale}) translateY(${24 * (1 - p)}px)`;
+    membersImg.style.opacity   = mOpacity;
+  }
+
+  // 3) Parallax arka planlar
+  document.querySelectorAll('.parallax-bg').forEach(sec => {
+    const speed = 0.2;
+    const off = window.scrollY * speed;
+    sec.style.backgroundPosition = `center calc(50% + ${off}px)`;
+  });
+}
+
+// İlk çalıştırma + scroll dinleyici
+window.addEventListener('load', onScroll);
+window.addEventListener('scroll', onScroll, { passive:true });
