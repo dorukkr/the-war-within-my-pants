@@ -1,10 +1,14 @@
+// IntersectionObserver: reveal on scroll
 const faders = document.querySelectorAll('.fade-in');
-const appearOptions = { threshold:0.3 };
-const appearOnScroll = new IntersectionObserver(function(entries, observer) {
-    entries.forEach(entry => {
-        if(!entry.isIntersecting) return;
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-    });
-}, appearOptions);
-faders.forEach(fader => appearOnScroll.observe(fader));
+const observer = new IntersectionObserver((entries, obs) => {
+  entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('visible');
+    obs.unobserve(e.target);
+  });
+}, { threshold: 0.25 });
+
+faders.forEach((el) => observer.observe(el));
+
+// Current year in footer
+document.getElementById('year').textContent = new Date().getFullYear();
