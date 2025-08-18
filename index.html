@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>The War Within My Pants</title>
   <meta name="description" content="WoW guild website for The War Within My Pants — raids, Mythic+, media and Discord."/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -14,62 +16,110 @@
       <span class="logo-dot"></span> TWWMP
     </div>
     <nav class="nav">
-      <a href="#section1">Home</a>
-      <a href="#section2">Members</a>
-      <a href="#section3">Raids</a>
-      <a href="#section4">Media</a>
+      <a href="#hero">Home</a>
+      <a href="#members">Members</a>
+      <a href="#raids">Raids</a>
+      <a href="#media">Media</a>
       <a class="button small" target="_blank" href="https://discord.gg/YOURDISCORD">Discord</a>
     </nav>
   </header>
 
-  <!-- Main content -->
   <main>
-    <!-- HERO -->
-<section id="hero">
-  <canvas id="bg-canvas"></canvas>
-  <div class="hero-content">
-    <img src="images/hero-logo.png" alt="Guild Logo" class="guild-logo">
-    <h1>The War Within My Pants</h1>
-    <p>Where epic raids and Mythic+ adventures happen!</p>
-    <a href="https://discord.gg/YOURDISCORD" target="_blank" class="button">Join our Discord</a>
-  </div>
-</section>
+    <!-- =============== HERO =============== -->
+    <section id="hero" class="parallax-bg">
+      <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-    <!-- MEMBERS -->
-    <section id="section2" class="parallax-bg bg-members">
+      <!-- (opsiyonel) parallax katmanları -->
+      <img src="images/hero-layer-back.png" alt="" class="hero-layer layer-back" onerror="this.style.display='none'">
+      <img src="images/hero-layer-front.png" alt="" class="hero-layer layer-front" onerror="this.style.display='none'">
+
+      <div class="hero-content" id="heroContent">
+        <img src="images/hero-logo.png" alt="Guild Logo" class="guild-logo neon-pulse" id="guildLogo" onerror="this.style.display='none'">
+        <h1 class="hero-title gradient-text">The War Within My Pants</h1>
+        <p class="hero-sub">Where epic raids and Mythic+ adventures happen!</p>
+        <a href="https://discord.gg/Zm7QF9D5DS" target="_blank" class="button button-3d" id="ctaBtn">
+          <span>Join our Discord</span>
+        </a>
+      </div>
+
+      <div class="scroll-indicator">Scroll</div>
+    </section>
+
+    <!-- =============== MEMBERS =============== -->
+    <section id="members" class="parallax-bg bg-members">
       <div class="content-box fade-in progress-animate">
         <h2>Guild Members</h2>
         <p>Meet our brave adventurers ready to conquer dungeons and raids.</p>
-        <ul class="grid three">
-          <li class="chip"> <strong>Guild Master:</strong> ArdaDoruk </li>
-          <li class="chip"> <strong>Officers:</strong> PlayerOne, PlayerTwo </li>
-          <li class="chip"> <strong>Raiders:</strong> PlayerThree, PlayerFour, PlayerFive </li>
+
+        <ul class="member-cards">
+          <!-- örnek üç kart -->
+          <li class="member-card">
+            <img src="images/member-1.jpg" alt="Member 1" onerror="this.style.display='none'">
+            <div class="mc-body">
+              <strong>ArdaDoruk</strong>
+              <span class="role gm">Guild Master</span>
+            </div>
+          </li>
+          <li class="member-card">
+            <img src="images/member-2.jpg" alt="Member 2" onerror="this.style.display='none'">
+            <div class="mc-body">
+              <strong>PlayerOne</strong>
+              <span class="role officer">Officer</span>
+            </div>
+          </li>
+          <li class="member-card">
+            <img src="images/member-3.jpg" alt="Member 3" onerror="this.style.display='none'">
+            <div class="mc-body">
+              <strong>PlayerTwo</strong>
+              <span class="role raider">Raider</span>
+            </div>
+          </li>
         </ul>
       </div>
     </section>
 
-    <!-- RAIDS & MYTHIC+ -->
-    <section id="section3" class="parallax-bg bg-raids">
+    <!-- =============== RAIDS =============== -->
+    <section id="raids" class="parallax-bg bg-raids">
       <div class="content-box fade-in progress-animate">
         <h2>Raids & Mythic+</h2>
         <p>Prepare your potions, sharpen your swords, and let’s push keys and defeat bosses together.</p>
+
+        <!-- küçük info kartları -->
         <div class="cards">
-          <div class="card"> <h3>Schedule</h3><p>Wed & Sun — 20:30 (Server)</p></div>
-          <div class="card"> <h3>Requirements</h3><p>Flasks, food, enchants, and good vibes.</p></div>
-          <div class="card"> <h3>Sign Up</h3><p>Ping Officers on Discord #raid-signup.</p></div>
+          <div class="card"><h3>Schedule</h3><p>Wed & Sun — 20:30 (Server)</p></div>
+          <div class="card"><h3>Requirements</h3><p>Flasks, food, enchants, and good vibes.</p></div>
+          <div class="card"><h3>Sign Up</h3><p>Ping Officers on Discord #raid-signup.</p></div>
+        </div>
+
+        <!-- timeline -->
+        <div class="timeline">
+          <div class="t-dot"></div>
+          <div class="t-item left">
+            <h4>Vault of Memories</h4><span>Cleared</span>
+          </div>
+          <div class="t-item right">
+            <h4>Echoes of Depth</h4><span>Progress</span>
+          </div>
+          <div class="t-item left">
+            <h4>Season M+ Push</h4><span>Weekly</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- MEDIA -->
-    <section id="section4" class="parallax-bg bg-media">
+    <!-- =============== MEDIA =============== -->
+    <section id="media" class="parallax-bg bg-media">
       <div class="content-box fade-in progress-animate">
         <h2>Media</h2>
         <p>Relive our legendary wins… and funny fails 😏</p>
+
         <div class="media-grid">
-          <img src="images/media-1.jpg" alt="Raid moment 1" />
-          <img src="images/media-2.jpg" alt="Raid moment 2" />
-          <img src="images/media-3.jpg" alt="Raid moment 3" />
+          <img src="images/media-1.jpg" alt="Raid moment 1" onerror="this.style.display='none'"/>
+          <img src="images/media-2.jpg" alt="Raid moment 2" onerror="this.style.display='none'"/>
+          <img src="images/media-3.jpg" alt="Raid moment 3" onerror="this.style.display='none'"/>
+          <img src="images/media-4.jpg" alt="Raid moment 4" onerror="this.style.display='none'"/>
+          <img src="images/media-5.jpg" alt="Raid moment 5" onerror="this.style.display='none'"/>
+          <img src="images/media-6.jpg" alt="Raid moment 6" onerror="this.style.display='none'"/>
         </div>
       </div>
     </section>
