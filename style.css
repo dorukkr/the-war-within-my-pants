@@ -24,10 +24,11 @@ body { font-family: Arial, sans-serif; color:#f5f5f5; background:#0d0d1a; overfl
 .button.small { padding:8px 14px; border-radius:10px; font-weight:600; }
 
 /* ===== Scroll Container & Sections ===== */
-main { 
+main {
   height:100vh;
-  overflow-y: scroll;            /* JS kontrollü smooth-snap */
-  scroll-behavior: auto;         /* default smooth kapalı, JS yönetecek */
+  overflow-y: scroll;
+  scroll-behavior: auto;      /* Smooth'u JS yönetiyor */
+  overscroll-behavior-y: contain; /* Aşırı momentum ve bounce’u azalt */
 }
 section {
   height:100vh; width:100%;
