@@ -149,22 +149,24 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 .members-section{
   text-align:center;
   padding:60px 20px;
-  background:#0a0a0a; /* koyu, site temasıyla uyumlu */
+  background:#0a0a0a;
 }
+
 .members-section h2{
   font-size:2.5rem;
-  margin-bottom:30px;
+  margin-bottom:20px;
   color:#fff;
   font-weight:800;
   letter-spacing:1.5px;
 }
+
 .members-image{
-  max-width:70%;
+  max-width:55%; /* daha küçük görünmesi için %70 → %55 yaptım */
   height:auto;
   border-radius:15px;
   box-shadow:0 0 30px rgba(0,0,0,0.6);
   will-change:transform, opacity;
-  transform-origin:center center; /* progress animasyon için */
+  transform-origin:center center;
 }
 
 /* =========================
