@@ -137,12 +137,11 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 @keyframes shine{ from{ left:-40%; } to{ left:120%; } }
 
 /* Hero CTA grubu (Discord + Apply Now) */
-.hero-ctas{
-  display:flex;
-  flex-direction:column;       /* alt alta */
-  align-items:center;
-  gap:12px;
-  margin-top:10px;
+.hero-ctas {
+  display: flex;
+  flex-direction: column;  /* butonları alt alta dizer */
+  gap: 14px;               /* aralarına boşluk bırakır */
+  align-items: center;     /* ortalar */
 }
 
 /* 3D press (içe göçme) efekti */
