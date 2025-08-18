@@ -1,44 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The War Within My Pants</title>
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The War Within My Pants</title>
+  <link rel="stylesheet" href="style.css" />
+  <meta name="description" content="WoW guild website for The War Within My Pants — raids, Mythic+, media and Discord."/>
 </head>
 <body>
-<main>
-    <section id="section1">
-        <div class="content-box fade-in">
-            <h1>The War Within My Pants</h1>
-            <p>Welcome to our guild website – where epic raids and Mythic+ adventures happen!</p>
-            <a href="https://discord.gg/Zm7QF9D5DS" target="_blank" class="button">Join our Discord</a>
-        </div>
+  <header class="topbar">
+    <div class="brand">TWWMP</div>
+    <nav class="nav">
+      <a href="#section1">Home</a>
+      <a href="#section2">Members</a>
+      <a href="#section3">Raids</a>
+      <a href="#section4">Media</a>
+      <a class="button small" target="_blank" href="https://discord.gg/YOURDISCORD">Discord</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section id="section1" class="bg-hero">
+      <div class="content-box fade-in">
+        <h1>The War Within My Pants</h1>
+        <p>Welcome to our guild — where epic raids and Mythic+ adventures happen!</p>
+        <a class="button" target="_blank" href="https://discord.gg/YOURDISCORD">Join our Discord</a>
+      </div>
+      <div class="scroll-indicator">Scroll</div>
     </section>
-    <section id="section2">
-        <div class="content-box fade-in">
-            <h2>Guild Members</h2>
-            <ul>
-                <li>Guild Master: ArdaDoruk</li>
-                <li>Officers: PlayerOne, PlayerTwo</li>
-                <li>Raiders: PlayerThree, PlayerFour, PlayerFive</li>
-            </ul>
-            <p>Meet our brave adventurers ready to conquer dungeons and raids!</p>
-        </div>
+
+    <!-- Members -->
+    <section id="section2" class="bg-members">
+      <div class="content-box fade-in">
+        <h2>Guild Members</h2>
+        <p>Meet our brave adventurers ready to conquer dungeons and raids.</p>
+        <ul class="grid three">
+          <li><strong>Guild Master:</strong> ArdaDoruk</li>
+          <li><strong>Officers:</strong> PlayerOne, PlayerTwo</li>
+          <li><strong>Raiders:</strong> PlayerThree, PlayerFour, PlayerFive</li>
+        </ul>
+      </div>
     </section>
-    <section id="section3">
-        <div class="content-box fade-in">
-            <h2>Raids & Mythic+</h2>
-            <p>Prepare your potions, sharpen your swords, and let’s tackle Mythic+ dungeons together!</p>
+
+    <!-- Raids & M+ -->
+    <section id="section3" class="bg-raids">
+      <div class="content-box fade-in">
+        <h2>Raids & Mythic+</h2>
+        <p>Prepare your potions, sharpen your swords, and let’s push keys and defeat bosses together.</p>
+        <div class="cards">
+          <div class="card fade-in">
+            <h3>Schedule</h3>
+            <p>Wed & Sun — 20:30 (Server)</p>
+          </div>
+          <div class="card fade-in">
+            <h3>Requirements</h3>
+            <p>Flasks, food, enchants, and good vibes.</p>
+          </div>
+          <div class="card fade-in">
+            <h3>Sign Up</h3>
+            <p>Ping Officers on Discord #raid-signup.</p>
+          </div>
         </div>
+      </div>
     </section>
-    <section id="section4">
-        <div class="content-box fade-in">
-            <h2>Media</h2>
-            <p>Relive our epic moments from raids and guild events. From legendary wins… to funny fails 😏</p>
+
+    <!-- Media -->
+    <section id="section4" class="bg-media">
+      <div class="content-box fade-in">
+        <h2>Media</h2>
+        <p>Relive our legendary wins… and funny fails 😏</p>
+        <div class="media-grid">
+          <img class="fade-in" src="images/media-1.jpg" alt="Raid moment 1" />
+          <img class="fade-in" src="images/media-2.jpg" alt="Raid moment 2" />
+          <img class="fade-in" src="images/media-3.jpg" alt="Raid moment 3" />
         </div>
+      </div>
     </section>
-</main>
-<script src="script.js"></script>
+  </main>
+
+  <footer class="footer">
+    <span>© <span id="year"></span> The War Within My Pants</span>
+  </footer>
+
+  <script src="script.js"></script>
 </body>
 </html>
