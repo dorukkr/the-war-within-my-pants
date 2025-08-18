@@ -39,7 +39,7 @@ p  { font-size: clamp(1rem, 2.2vw, 1.15rem); color:#e9e9e9; max-width: 760px; ma
 }
 
 /* Backgrounds (local images) */
-.bg-hero    { background: url('images/hero.jpg')    center/cover no-repeat; }
+.bg-hero    { background: url('images/hero.png')    center/cover no-repeat; }
 .bg-members { background: url('images/members.jpg') center/cover no-repeat; }
 .bg-raids   { background: url('images/raid.jpg')    center/cover no-repeat; }
 .bg-media   { background: url('images/media.jpg')   center/cover no-repeat; }
