@@ -161,10 +161,15 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
   filter: brightness(.97);
 }
 
-/* Apply Now için ikincil ton */
-.button-3d--secondary{
-  background: linear-gradient(180deg, #2ecc71, #27ae60);
-  border:1px solid rgba(255,255,255,.18);
+/* Apply Now için sarı tema */
+.button-3d--secondary {
+  background: linear-gradient(180deg, #f1c40f, #d4ac0d);
+  border: 1px solid rgba(0,0,0,.25);
+  color: #000; /* Yazı rengi siyah */
+}
+
+.button-3d--secondary span {
+  color: #000; /* ekstra garanti */
 }
 
 /* Scroll hint */
