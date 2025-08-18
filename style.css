@@ -56,7 +56,7 @@ p{font-size:1.1rem;color:#e9e9e9;margin:0 auto 22px;max-width:760px}
               linear-gradient(180deg, #0f2027, #203a43, #2c5364);
 }
 #bg-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-.hero-layer{position:absolute;width:140%;left:50%;transform:translateX(-50%);pointer-events:none;opacity:.35;filter:blur(1px)}
+.hero-layer{position:absolute;width:140%;left:50%;transform:translateX(-50%);pointer-events:none;opacity:.55;filter:blur(1px)}
 .layer-back{bottom:-8vh;z-index:1}
 .layer-front{bottom:-4vh;z-index:2;opacity:.5}
 .hero-content{position:relative;z-index:3;will-change:transform,opacity}
