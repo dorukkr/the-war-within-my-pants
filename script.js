@@ -106,3 +106,23 @@ window.addEventListener('scroll', () => {
 
 /* ===== Footer year ===== */
 document.getElementById('year').textContent = new Date().getFullYear();
+
+
+// Scroll progress (scale + opacity) -- Apple vibe
+window.addEventListener('scroll', () => {
+  document.querySelectorAll('.progress-animate').forEach(el => {
+    const rect = el.getBoundingClientRect();
+    const h = window.innerHeight;
+
+    // eleman ekranın alt %90'ında devreye girsin, üst %10'unda bitirsin
+    const start = h * 0.9;
+    const end   = h * 0.1;
+
+    const p = Math.min(1, Math.max(0, (start - rect.top) / (start - end))); // 0..1
+    const scale = 0.92 + p * 0.10;   // 0.92x -> 1.02x aralığı (çok nazik)
+    const opacity = 0.55 + p * 0.45; // 0.55 -> 1.0
+
+    el.style.transform = `scale(${scale}) translateY(${30 * (1 - p)}px)`;
+    el.style.opacity = opacity;
+  });
+}, { passive: true });
