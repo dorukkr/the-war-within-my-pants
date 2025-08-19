@@ -121,7 +121,7 @@
       if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`);
 
       setStatus("Application received. Redirecting…", true);
-      window.location.href = "/thanks";
+      window.location.href = "/thank-you";
     } catch (err) {
       console.error(err);
       setStatus("Submission failed. Please try again later.");
