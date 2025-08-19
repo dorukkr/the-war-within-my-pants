@@ -158,8 +158,8 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 
 .hero-content{ position:relative; z-index:3; }
 .guild-logo {
-  width:min(280px,30vw);  /* burayı değiştirdik */
-  height:auto;            /* oranı korusun */
+  width:min(280px,30vw);  /* daha kompakt ve orantılı */
+  height:auto;
   margin:0 auto 18px;
   filter: drop-shadow(0 18px 40px rgba(0,0,0,.45));
   transform: translateY(8px) scale(.98);
@@ -209,7 +209,7 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
   display: flex;
   flex-direction: column;   /* her zaman alt alta */
   align-items: center;      /* ortalı */
-  gap: 18px;                /* butonlar arası boşluk biraz daha ferah */
+  gap: 18px;
   margin-top: 25px;
 }
 
@@ -296,6 +296,25 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
   transition:transform .35s ease, filter .35s ease;
 }
 .media-grid img:hover{ transform: scale(1.04); filter: brightness(1.05); }
+
+/* =========================
+   Apply Form (NEW)
+========================= */
+#apply .content-box { text-align:left; }
+.req { color:#ffd36b; margin-left:4px; }
+.form-grid{ display:grid; gap:14px; grid-template-columns:1fr 1fr; margin:14px 0; }
+@media(max-width:760px){ .form-grid{ grid-template-columns:1fr; } }
+.field{ display:flex; flex-direction:column; gap:8px; }
+.field label,.label{ font-weight:600; color:#f7c66a; }
+.field input,.field select,.field textarea{
+  background:rgba(0,0,0,.45); border:1px solid rgba(255,255,255,.12);
+  color:#fff; border-radius:12px; padding:12px 14px; font-size:1rem;
+}
+.chips{ display:flex; flex-wrap:wrap; gap:10px; margin-top:8px; }
+.chips input{ accent-color:#ffd36b; }
+.agree{ margin:12px 0 4px; color:#ddd; }
+.actions{ margin-top:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+#applyStatus{ font-size:.95rem; color:#ffd36b; }
 
 /* =========================
    Animations
