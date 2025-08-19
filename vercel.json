@@ -1,0 +1,16 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "rewrites": [
+    { "source": "/home",    "destination": "/" },
+    { "source": "/members", "destination": "/" },
+    { "source": "/raids",   "destination": "/" },
+    { "source": "/media",   "destination": "/" },
+
+    { "source": "/applynow", "destination": "/apply.html" },
+    { "source": "/thanks",   "destination": "/thank-you.html" }
+  ],
+  "redirects": [
+    { "source": "/index.html", "destination": "/", "permanent": true }
+  ]
+}
