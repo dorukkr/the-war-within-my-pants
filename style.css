@@ -156,6 +156,11 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 /* =========================
    Members
    ========================= */
+#members {
+  background: url('images/members-bg-aurora.png') center/cover no-repeat;
+  position: relative;
+  padding: 80px 20px;
+}
 .members-container {
   position: relative;
   display: inline-block;
