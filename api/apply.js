@@ -8,7 +8,7 @@
   // Proxy endpoint (Vercel)
   const PROXY_URL = "/api/apply"; // aynı domain altında çağrılır
   // İsteğe bağlı shared secret — Vercel env ile eşleşmeli
-  const APPLY_SECRET = "CHANGE_ME_SECRET"; // <- güvenli bir stringe değiştir (örn. 32+ karakter)
+  const APPLY_SECRET = "Gk4vJ2_n4"; // <- güvenli bir stringe değiştir (örn. 32+ karakter)
 
   const statusEl  = document.getElementById('applyStatus');
   const submitBtn = document.getElementById('applySubmit');
