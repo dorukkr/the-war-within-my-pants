@@ -109,15 +109,19 @@
           </div>
 
           <div class="form-grid">
-            <div class="field">
-              <label for="rio">Raider.IO link</label>
-              <input id="rio" name="rio" placeholder="https://raider.io/..." inputmode="url" />
-            </div>
-            <div class="field">
-              <label for="wcl">Warcraft Logs link</label>
-              <input id="wcl" name="wcl" placeholder="https://www.warcraftlogs.com/..." inputmode="url" />
-            </div>
-          </div>
+  <div class="field">
+    <label for="rio">Raider.IO link <span class="req">*</span></label>
+    <input id="rio" name="rio" type="url" required
+           placeholder="https://raider.io/characters/eu/..." />
+  </div>
+
+  <div class="field">
+    <label for="wcl">Warcraft Logs link <span class="req">*</span></label>
+    <input id="wcl" name="wcl" type="url" required
+           placeholder="https://www.warcraftlogs.com/character/..." />
+  </div>
+</div>
+
 
           <div class="field">
             <label for="availability">Raid Times Availability<span class="req">*</span></label>
@@ -155,45 +159,83 @@
   </footer>
 
   <!-- Validation script -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("applyForm");
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("applyForm");
+  const statusEl = document.getElementById("applyStatus");
 
-      form.addEventListener("submit", function(e) {
-        e.preventDefault();
-        let valid = true;
+  function showError(fieldOrContainer, text) {
+    const container =
+      fieldOrContainer.closest?.('.field') ||
+      fieldOrContainer.closest?.('.agree') ||
+      fieldOrContainer.parentNode;
+    const msg = document.createElement('div');
+    msg.className = 'error-message';
+    msg.textContent = text;
+    container.appendChild(msg);
+  }
 
-        // Eski hataları sil
-        form.querySelectorAll(".error-message").forEach(el => el.remove());
+  function isValidUrl(value) {
+    try { new URL(value); return true; } catch { return false; }
+  }
 
-        // Required alanları kontrol et
-        form.querySelectorAll("[required]").forEach(field => {
-          if (!field.value.trim()) {
-            valid = false;
-            const msg = document.createElement("div");
-            msg.className = "error-message";
-            msg.textContent = "This field is required.";
-            field.parentNode.appendChild(msg);
-          }
-        });
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-        // En az 1 role seçilmiş mi
-        const roles = form.querySelectorAll("input[name='role']:checked");
-        if (roles.length === 0) {
-          valid = false;
-          const roleField = form.querySelector("#role")?.parentNode || form.querySelector(".chips");
-          const msg = document.createElement("div");
-          msg.className = "error-message";
-          msg.textContent = "Please select at least one role.";
-          roleField.appendChild(msg);
-        }
+    // eski hataları sil
+    form.querySelectorAll(".error-message").forEach(el => el.remove());
+    let valid = true;
 
-        if (valid) {
-          window.location.href = "thank-you.html";
-        }
-      });
-    });
-  </script>
+    // alanlar
+    const character    = document.getElementById("character");
+    const realm        = document.getElementById("realm");
+    const btag         = document.getElementById("btag");
+    const availability = document.getElementById("availability");
+    const rio          = document.getElementById("rio");
+    const wcl          = document.getElementById("wcl");
+    const consent      = document.getElementById("consent");
+
+    // zorunlu metin alanları
+    if (!character.value.trim())    { valid = false; showError(character, "This field is required."); }
+    if (!realm.value.trim())        { valid = false; showError(realm, "This field is required."); }
+    if (!btag.value.trim())         { valid = false; showError(btag, "This field is required."); }
+    if (!availability.value.trim()) { valid = false; showError(availability, "This field is required."); }
+
+    // RIO & WCL zorunlu + URL doğrulaması
+    if (!rio.value.trim())          { valid = false; showError(rio, "This field is required."); }
+    else if (!isValidUrl(rio.value)){ valid = false; showError(rio, "Please enter a valid URL."); }
+
+    if (!wcl.value.trim())          { valid = false; showError(wcl, "This field is required."); }
+    else if (!isValidUrl(wcl.value)){ valid = false; showError(wcl, "Please enter a valid URL."); }
+
+    // role: en az bir tane işaretli mi?
+    if (form.querySelectorAll("input[name='role']:checked").length === 0) {
+      valid = false;
+      showError(form.querySelector(".chips"), "Please select at least one role.");
+    }
+
+    // consent: işaretli mi?
+    if (!consent.checked) {
+      valid = false;
+      showError(consent, "You must agree before submitting.");
+    }
+
+    if (!valid) return;
+
+    // Discord'a gönder (varsa) ve teşekkür sayfasına git
+    try {
+      if (window.__sendApplicationToDiscord) {
+        await window.__sendApplicationToDiscord();
+      }
+    } catch (err) {
+      if (statusEl) statusEl.textContent = 'Could not send to Discord (will still redirect).';
+      console.error(err);
+    }
+    window.location.href = "thank-you.html";
+  });
+});
+</script>
+
 
   <!-- Footer yıl -->
   <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
