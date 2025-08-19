@@ -278,3 +278,19 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
   /* Members görseli mobilde daha geniş */
   .members-container{ max-width: 92vw; }
 }
+
+/* --- FORCE OVERRIDES for members image size --- */
+#members .members-container{
+  max-width: 760px !important;   /* konteyneri daralt */
+  width: 100% !important;
+  margin: 0 auto !important;
+}
+
+#members .members-container .members-image{
+  width: 100% !important;       /* konteynerin tamamı kadar */
+  max-width: 520px !important;  /* gerçek görsel genişliği */
+  height: auto !important;
+  margin: 0 auto !important;
+  display: block !important;
+}
+
