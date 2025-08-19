@@ -146,6 +146,21 @@
     </div>
   </footer>
 
+  <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("applyForm");
+    if (form) {
+      form.addEventListener("submit", function(e) {
+        e.preventDefault(); // Sayfanın kendi kendine yenilenmesini engelle
+        // Burada backend'e POST gönderebilirsin (fetch ile)
+        // Şimdilik direkt teşekkür sayfasına yönlendiriyoruz:
+        window.location.href = "thank-you.html";
+      });
+    }
+  });
+</script>
+
+
   <!-- Yıl doldurma -->
   <script>const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();</script>
 
