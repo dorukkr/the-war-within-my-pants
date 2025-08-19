@@ -2,106 +2,127 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>The War Within My Pants</title>
-  <meta name="description" content="WoW guild website for The War Within My Pants — raids, Mythic+, media and Discord."/>
+  <meta name="description" content="WoW guild website for The War Within My Pants — raids, Mythic+, media and Discord." />
+
+  <!-- Canonical & theme color -->
+  <link rel="canonical" href="https://thewarwithinmypants.tk/" />
+  <meta name="theme-color" content="#0b0f17" />
+
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
   <link rel="stylesheet" href="style.css" />
-  <!-- Fantasy başlık fontu (Cinzel) -->
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
 
-<!-- Favicon (PNG, birden çok boyut + cache bust) -->
-<link rel="icon" type="image/png" sizes="16x16"  href="images/favicon.png?v=2">
-<link rel="icon" type="image/png" sizes="32x32"  href="images/favicon.png?v=2">
-<link rel="icon" type="image/png" sizes="64x64"  href="images/favicon.png?v=2">
-<link rel="shortcut icon" href="images/favicon.png?v=2">
-<link rel="apple-touch-icon" sizes="180x180" href="images/favicon.png?v=2">
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png?v=2">
+  <link rel="icon" type="image/png" sizes="64x64" href="images/favicon.png?v=2">
+  <link rel="shortcut icon" href="images/favicon.png?v=2">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/favicon.png?v=2">
 
-<!-- Open Graph / Social Preview -->
-<meta property="og:title" content="The War Within My Pants" />
-<meta property="og:description" content="WoW guild website for raids, Mythic+ and Discord." />
-<meta property="og:image" content="images/og-cover.jpg" />
-<meta property="og:type" content="website" />
-<meta property="og:url" content="https://thewarwithinmypants.tk" />
-
-<!-- Twitter Card -->
-<meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="The War Within My Pants" />
-<meta name="twitter:description" content="WoW guild website for raids, Mythic+, media and Discord." />
-<meta name="twitter:image" content="images/og-cover.jpg" />
-
-  
+  <!-- Social -->
+  <meta property="og:title" content="The War Within My Pants" />
+  <meta property="og:description" content="WoW guild website for raids, Mythic+ and Discord." />
+  <meta property="og:image" content="images/og-cover.jpg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thewarwithinmypants.tk/" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="The War Within My Pants" />
+  <meta name="twitter:description" content="WoW guild website for raids, Mythic+, media and Discord." />
+  <meta name="twitter:image" content="images/og-cover.jpg" />
 </head>
 <body>
+  <!-- Skip link -->
+  <a class="skip-link" href="#main">Skip to content</a>
+
   <!-- Top Navigation -->
-  <header class="topbar">
+  <header class="topbar" role="banner">
     <div class="brand">
-      <span class="logo-dot"></span> TWWMP
+      <span class="logo-dot" aria-hidden="true"></span> TWWMP
     </div>
-    <nav class="nav">
+    <nav class="nav" aria-label="Primary">
       <a href="#hero">Home</a>
       <a href="#members">Members</a>
       <a href="#raids">Raids</a>
       <a href="#media">Media</a>
-      <a class="button small" target="_blank" href="https://discord.gg/Zm7QF9D5DS">Discord</a>
+      <a class="button small" target="_blank" rel="noopener noreferrer" href="https://discord.gg/Zm7QF9D5DS">Discord</a>
     </nav>
   </header>
 
-  <main>
+  <main id="main">
     <!-- =============== HERO =============== -->
-    <section id="hero" class="parallax-bg">
+    <section id="hero" class="parallax-bg" aria-label="Guild intro">
       <canvas id="bg-canvas" aria-hidden="true"></canvas>
 
-      <!-- (opsiyonel) parallax katmanları -->
-      <img src="images/hero-layer-back.png" alt="" class="hero-layer layer-back" onerror="this.style.display='none'">
-      <img src="images/hero-layer-front.png" alt="" class="hero-layer layer-front" onerror="this.style.display='none'">
+      <!-- Parallax layers (decorative) -->
+      <img src="images/hero-layer-back.png" alt="" class="hero-layer layer-back"
+           onerror="this.style.display='none'" width="1920" height="1080" decoding="async" loading="eager" fetchpriority="high">
+      <img src="images/hero-layer-front.png" alt="" class="hero-layer layer-front"
+           onerror="this.style.display='none'" width="1920" height="1080" decoding="async">
 
       <div class="hero-content" id="heroContent">
-        <img src="images/hero-logoust.png" alt="Guild Logo" class="guild-logo neon-pulse" id="guildLogo" onerror="this.style.display='none'">
+        <img
+          src="images/hero-logoust.png"
+          alt="The War Within My Pants guild logo"
+          class="guild-logo neon-pulse"
+          id="guildLogo"
+          onerror="this.style.display='none'"
+          width="512" height="512"
+          decoding="async" fetchpriority="high"
+        >
         <h1 class="hero-title gradient-text">The War Within My Pants</h1>
         <p class="hero-sub">Where epic raids and Mythic+ adventures happen!</p>
 
-        <!-- ↓↓ BUTONLAR: Discord + Apply Now ↓↓ -->
         <div class="hero-ctas">
-          <a href="https://discord.gg/Zm7QF9D5DS" target="_blank" class="button button-3d pressable">
+          <a href="https://discord.gg/Zm7QF9D5DS" target="_blank" rel="noopener noreferrer"
+             class="button button-3d pressable" aria-label="Join our Discord server (opens in new tab)">
             <span>Join our Discord</span>
           </a>
-          <a href="https://senin-linkin.com" target="_blank" class="button button-3d button-3d--secondary pressable">
+          <!-- TODO: Apply form sayfasına bağla -->
+          <a href="apply.html" class="button button-3d button-3d--secondary pressable" aria-label="Apply to the guild">
             <span>Apply Now</span>
           </a>
         </div>
-        <!-- ↑↑ BUTONLAR BİTTİ ↑↑ -->
-
       </div>
 
-      <div class="scroll-indicator">Scroll</div>
+      <div class="scroll-indicator" aria-hidden="true">Scroll</div>
     </section>
 
     <!-- =============== MEMBERS =============== -->
-    <section id="members" class="fade-in">
+    <section id="members" class="fade-in" aria-label="Guild members">
       <div class="members-container">
-        <h2 class="members-title"></h2>
-        <img src="images/members.jpg" alt="Guild Management Team" class="members-image progress-animate">
+        <h2 class="members-title">Officers & Roster</h2>
+        <img
+          src="images/members.jpg"
+          alt="Guild management team"
+          class="members-image progress-animate"
+          onerror="this.style.display='none'"
+          width="1600" height="900"
+          loading="lazy" decoding="async"
+        >
       </div>
     </section>
 
     <!-- =============== RAIDS =============== -->
-    <section id="raids" class="parallax-bg bg-raids">
+    <section id="raids" class="parallax-bg bg-raids" aria-label="Raids and Mythic Plus">
       <div class="content-box fade-in progress-animate">
         <h2>Raids & Mythic+</h2>
         <p>Prepare your potions, sharpen your swords, and let’s push keys and defeat bosses together.</p>
 
-        <!-- küçük info kartları -->
-        <div class="cards">
-          <div class="card"><h3>Schedule</h3><p>Wed & Sun — 20:30 (Server)</p></div>
-          <div class="card"><h3>Requirements</h3><p>Flasks, food, enchants, and good vibes.</p></div>
-          <div class="card"><h3>Sign Up</h3><p>Ping Officers on Discord #raid-signup.</p></div>
+        <div class="cards" role="list">
+          <div class="card" role="listitem"><h3>Schedule</h3><p>Wed &amp; Sun — 20:30 (Server)</p></div>
+          <div class="card" role="listitem"><h3>Requirements</h3><p>Flasks, food, enchants, and good vibes.</p></div>
+          <div class="card" role="listitem"><h3>Sign Up</h3><p>Ping Officers on Discord #raid-signup.</p></div>
         </div>
 
-        <!-- timeline -->
-        <div class="timeline">
-          <div class="t-dot"></div>
+        <div class="timeline" aria-label="Progress timeline">
+          <div class="t-dot" aria-hidden="true"></div>
           <div class="t-item left">
             <h4>Vault of Memories</h4><span>Cleared</span>
           </div>
@@ -116,38 +137,38 @@
     </section>
 
     <!-- =============== MEDIA =============== -->
-    <section id="media" class="parallax-bg bg-media">
+    <section id="media" class="parallax-bg bg-media" aria-label="Guild media gallery">
       <div class="content-box fade-in progress-animate">
         <h2>Media</h2>
         <p>Relive our legendary wins… and funny fails 😏</p>
 
         <div class="media-grid">
-          <img src="images/media-1.jpg" alt="Raid moment 1" onerror="this.style.display='none'"/>
-          <img src="images/media-2.jpg" alt="Raid moment 2" onerror="this.style.display='none'"/>
-          <img src="images/media-3.jpg" alt="Raid moment 3" onerror="this.style.display='none'"/>
-          <img src="images/media-4.jpg" alt="Raid moment 4" onerror="this.style.display='none'"/>
-          <img src="images/media-5.jpg" alt="Raid moment 5" onerror="this.style.display='none'"/>
-          <img src="images/media-6.jpg" alt="Raid moment 6" onerror="this.style.display='none'"/>
+          <img src="images/media-1.jpg" alt="Raid moment 1" onerror="this.style.display='none'" loading="lazy" decoding="async" width="800" height="600"/>
+          <img src="images/media-2.jpg" alt="Raid moment 2" onerror="this.style.display='none'" loading="lazy" decoding="async" width="800" height="600"/>
+          <img src="images/media-3.jpg" alt="Raid moment 3" onerror="this.style.display='none'" loading="lazy" decoding="async" width="800" height="600"/>
+          <img src="images/media-4.jpg" alt="Raid moment 4" onerror="this.style.display='none'" loading="lazy" decoding="async" width="800" height="600"/>
+          <img src="images/media-5.jpg" alt="Raid moment 5" onerror="this.style.display='none'" loading="lazy" decoding="async" width="800" height="600"/>
+          <img src="images/media-6.jpg" alt="Raid moment 6" onerror="this.style.display='none'" loading="lazy" decoding="async" width="800" height="600"/>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="footer" role="contentinfo">
-  <div class="footer-inner">
-    <div class="footer-left">
-      <span>© <span id="year"></span> The War Within My Pants</span>
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span>© <span id="year"></span> The War Within My Pants</span>
+      </div>
+      <ul class="footer-links" aria-label="Guild Links">
+        <li><a href="https://discord.gg/Zm7QF9D5DS" target="_blank" rel="noopener noreferrer">Discord</a></li>
+        <li><a href="https://raider.io/" target="_blank" rel="noopener noreferrer">Raider.IO</a></li>
+        <li><a href="https://www.warcraftlogs.com/" target="_blank" rel="noopener noreferrer">Warcraft Logs</a></li>
+        <li><a href="#hero">Back to top</a></li>
+      </ul>
     </div>
-    <ul class="footer-links" aria-label="Guild Links">
-      <li><a href="https://discord.gg/Zm7QF9D5DS" target="_blank" rel="noopener">Discord</a></li>
-      <li><a href="https://raider.io/" target="_blank" rel="noopener">Raider.IO</a></li>
-      <li><a href="https://www.warcraftlogs.com/" target="_blank" rel="noopener">Warcraft Logs</a></li>
-      <li><a href="#hero">Back to top</a></li>
-    </ul>
-  </div>
-</footer>
+  </footer>
 
-
+  <!-- Script en sonda kalabilir; istersen <head> içine defer ile de alabiliriz -->
   <script src="script.js"></script>
 </body>
 </html>
