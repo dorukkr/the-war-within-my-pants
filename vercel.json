@@ -8,7 +8,7 @@
     { "source": "/media",   "destination": "/" },
 
     { "source": "/apply", "destination": "/apply.html" },
-    { "source": "/thanks",   "destination": "/thank-you.html" }
+    { "source": "/thank-you",   "destination": "/thank-you.html" }
   ],
   "redirects": [
     { "source": "/index.html", "destination": "/", "permanent": true }
