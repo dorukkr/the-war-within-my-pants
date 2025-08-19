@@ -1,4 +1,4 @@
-<!-- apply.html (final with validation) -->
+<!-- apply.html (final with Cloudflare Turnstile) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,29 +8,21 @@
   <meta name="description" content="Apply to The War Within My Pants — WoW guild recruitment form." />
   <meta name="theme-color" content="#0b0f17" />
 
-  <!-- Yazı tipleri ve stil -->
+  <!-- Fonts & styles -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
   <style>
-    .error-message {
-      color: #ff6b6b;
-      font-size: 0.85rem;
-      margin-top: 4px;
-    }
-    .field input:invalid,
-    .field select:invalid,
-    .field textarea:invalid {
-      border-color: #ff6b6b;
-    }
+    .error-message { color:#ff6b6b; font-size:.85rem; margin-top:4px; }
+    .field input:invalid, .field select:invalid, .field textarea:invalid { border-color:#ff6b6b; }
   </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- Üst bar -->
+  <!-- Topbar -->
   <header class="topbar" role="banner">
     <div class="brand">
       <span class="logo-dot" aria-hidden="true"></span> TWWMP
@@ -50,18 +42,17 @@
       <div class="content-box" style="text-align:center;">
         <h1>Apply to The War Within My Pants</h1>
         <p>Fill out this form to join our guild. Your answers will be sent directly to the officers on Discord.</p>
-        <p style="margin-top:8px;">
-  <a href="/" class="button small">← Back to Home</a>
-</p>
+        <p style="margin-top:8px;"><a href="/" class="button small">← Back to Home</a></p>
       </div>
     </section>
 
-    <!-- FORM -->
+    <!-- Form -->
     <section id="apply" class="parallax-bg" aria-label="Guild application form" style="background-image:url('images/media.jpg');">
       <div class="content-box fade-in" style="max-width:860px; width:min(92vw,860px); text-align:left;">
         <h2 style="text-align:center;">Application Form</h2>
 
         <form id="applyForm" novalidate>
+          <!-- Honeypot -->
           <input type="text" name="website" id="website" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px;">
 
           <div class="form-grid">
@@ -102,7 +93,7 @@
           </div>
 
           <div class="field">
-            <label for="role">Preferred Roles <span class="req">*</span></label>
+            <label class="label">Preferred Roles <span class="req">*</span></label>
             <div class="chips">
               <label><input type="checkbox" name="role" value="Tank"> Tank</label>
               <label><input type="checkbox" name="role" value="Healer"> Healer</label>
@@ -111,19 +102,15 @@
           </div>
 
           <div class="form-grid">
-  <div class="field">
-    <label for="rio">Raider.IO link <span class="req">*</span></label>
-    <input id="rio" name="rio" type="url" required
-           placeholder="https://raider.io/characters/eu/..." />
-  </div>
-
-  <div class="field">
-    <label for="wcl">Warcraft Logs link <span class="req">*</span></label>
-    <input id="wcl" name="wcl" type="url" required
-           placeholder="https://www.warcraftlogs.com/character/..." />
-  </div>
-</div>
-
+            <div class="field">
+              <label for="rio">Raider.IO link <span class="req">*</span></label>
+              <input id="rio" name="rio" type="url" required placeholder="https://raider.io/characters/eu/..." />
+            </div>
+            <div class="field">
+              <label for="wcl">Warcraft Logs link <span class="req">*</span></label>
+              <input id="wcl" name="wcl" type="url" required placeholder="https://www.warcraftlogs.com/character/..." />
+            </div>
+          </div>
 
           <div class="field">
             <label for="availability">Raid Times Availability<span class="req">*</span></label>
@@ -132,15 +119,29 @@
 
           <div class="field">
             <label for="notes">Anything else we should know?</label>
-            <textarea id="notes" name="notes" rows="3" placeholder="Optional: offspec, experience, M+ score, goals…"></textarea>
+            <textarea id="notes" name="notes" rows="3" placeholder="Optional: Discord name, offspec, experience, M+ score, goals…"></textarea>
           </div>
 
           <div class="agree">
             <label><input type="checkbox" id="consent" required> I agree that my answers will be shared with the officers on Discord.</label>
           </div>
 
+          <!-- ⬇⬇ Cloudflare Turnstile widget — Submit'in hemen üstü ⬇⬇ -->
+          <div class="field" id="captchaField">
+            <label class="label">Human verification <span class="req">*</span></label>
+            <div
+              class="cf-turnstile"
+              data-sitekey="YOUR_TURNSTILE_SITE_KEY"
+              data-callback="onTurnstileSuccess"
+              data-error-callback="onTurnstileError"
+              data-expired-callback="onTurnstileExpired">
+            </div>
+            <small id="captchaError" class="error-msg" style="display:none;">Please complete the verification.</small>
+          </div>
+          <!-- ⬆⬆ Cloudflare Turnstile widget ⬆⬆ -->
+
           <div class="actions">
-            <button type="submit" class="button-3d pressable"><span>Submit Application</span></button>
+            <button type="submit" class="button-3d pressable" id="applySubmit"><span>Submit Application</span></button>
             <span id="applyStatus" role="status" aria-live="polite"></span>
           </div>
         </form>
@@ -160,91 +161,149 @@
     </div>
   </footer>
 
+  <!-- (İsteğe bağlı) harici apply.js'in varsa burada kalsın; yoksa sorun değil -->
   <script src="apply.js"></script>
 
-  <!-- Validation script -->
- <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("applyForm");
-  const statusEl = document.getElementById("applyStatus");
+  <!-- Inline validation + Turnstile + /api/apply POST (guarded) -->
+  <script>
+  (function(){
+    if (window.__APPLY_HANDLER__) return; // çifte bağlanmayı engelle
+    window.__APPLY_HANDLER__ = true;
 
-  function showError(fieldOrContainer, text) {
-    const container =
-      fieldOrContainer.closest?.('.field') ||
-      fieldOrContainer.closest?.('.agree') ||
-      fieldOrContainer.parentNode;
-    const msg = document.createElement('div');
-    msg.className = 'error-message';
-    msg.textContent = text;
-    container.appendChild(msg);
-  }
+    const form = document.getElementById("applyForm");
+    const statusEl = document.getElementById("applyStatus");
+    const submitBtn = document.getElementById("applySubmit");
+    const capErrEl = document.getElementById("captchaError");
 
-  function isValidUrl(value) {
-    try { new URL(value); return true; } catch { return false; }
-  }
+    let turnstileToken = "";
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
+    // Turnstile callback'leri (HTML data-attr ile bağlı)
+    window.onTurnstileSuccess = (token) => {
+      turnstileToken = token || "";
+      if (capErrEl) capErrEl.style.display = "none";
+    };
+    window.onTurnstileError = () => {
+      turnstileToken = "";
+      if (capErrEl) capErrEl.style.display = "inline";
+    };
+    window.onTurnstileExpired = () => {
+      turnstileToken = "";
+      if (capErrEl) capErrEl.style.display = "inline";
+    };
 
-    // eski hataları sil
-    form.querySelectorAll(".error-message").forEach(el => el.remove());
-    let valid = true;
-
-    // alanlar
-    const character    = document.getElementById("character");
-    const realm        = document.getElementById("realm");
-    const btag         = document.getElementById("btag");
-    const availability = document.getElementById("availability");
-    const rio          = document.getElementById("rio");
-    const wcl          = document.getElementById("wcl");
-    const consent      = document.getElementById("consent");
-
-    // zorunlu metin alanları
-    if (!character.value.trim())    { valid = false; showError(character, "This field is required."); }
-    if (!realm.value.trim())        { valid = false; showError(realm, "This field is required."); }
-    if (!btag.value.trim())         { valid = false; showError(btag, "This field is required."); }
-    if (!availability.value.trim()) { valid = false; showError(availability, "This field is required."); }
-
-    // RIO & WCL zorunlu + URL doğrulaması
-    if (!rio.value.trim())          { valid = false; showError(rio, "This field is required."); }
-    else if (!isValidUrl(rio.value)){ valid = false; showError(rio, "Please enter a valid URL."); }
-
-    if (!wcl.value.trim())          { valid = false; showError(wcl, "This field is required."); }
-    else if (!isValidUrl(wcl.value)){ valid = false; showError(wcl, "Please enter a valid URL."); }
-
-    // role: en az bir tane işaretli mi?
-    if (form.querySelectorAll("input[name='role']:checked").length === 0) {
-      valid = false;
-      showError(form.querySelector(".chips"), "Please select at least one role.");
+    function showError(node, text){
+      const wrap = node.closest?.(".field") || node.parentNode;
+      const msg = document.createElement("div");
+      msg.className = "error-message";
+      msg.textContent = text;
+      wrap.appendChild(msg);
+    }
+    function isValidUrl(v){ try { new URL(v); return true; } catch { return false; } }
+    function setStatus(txt, ok=false){
+      if (!statusEl) return;
+      statusEl.textContent = txt || "";
+      statusEl.style.color = ok ? "#4ade80" : "#ffd36b";
     }
 
-    // consent: işaretli mi?
-    if (!consent.checked) {
-      valid = false;
-      showError(consent, "You must agree before submitting.");
-    }
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      // eski hataları temizle
+      form.querySelectorAll(".error-message").forEach(el => el.remove());
 
-    if (!valid) return;
+      // honeypot
+      if (form.website && form.website.value.trim() !== "") return;
 
-    // Discord'a gönder (varsa) ve teşekkür sayfasına git
-    try {
-      if (window.__sendApplicationToDiscord) {
-        await window.__sendApplicationToDiscord();
+      let valid = true;
+      const character    = document.getElementById("character");
+      const realm        = document.getElementById("realm");
+      const btag         = document.getElementById("btag");
+      const rio          = document.getElementById("rio");
+      const wcl          = document.getElementById("wcl");
+      const availability = document.getElementById("availability");
+      const consent      = document.getElementById("consent");
+
+      if (!character.value.trim())    { valid=false; showError(character,"This field is required."); }
+      if (!realm.value.trim())        { valid=false; showError(realm,"This field is required."); }
+      if (!btag.value.trim())         { valid=false; showError(btag,"This field is required."); }
+      if (!availability.value.trim()) { valid=false; showError(availability,"This field is required."); }
+
+      if (!rio.value.trim())          { valid=false; showError(rio,"This field is required."); }
+      else if (!isValidUrl(rio.value)){ valid=false; showError(rio,"Please enter a valid URL."); }
+
+      if (!wcl.value.trim())          { valid=false; showError(wcl,"This field is required."); }
+      else if (!isValidUrl(wcl.value)){ valid=false; showError(wcl,"Please enter a valid URL."); }
+
+      if (form.querySelectorAll("input[name='role']:checked").length === 0){
+        valid=false; showError(form.querySelector(".chips"), "Please select at least one role.");
       }
-    } catch (err) {
-      if (statusEl) statusEl.textContent = 'Could not send to Discord (will still redirect).';
-      console.error(err);
-    }
-    window.location.href = "thank-you.html";
-  });
-});
-</script>
+      if (!consent.checked){
+        valid=false; showError(consent, "You must agree before submitting.");
+      }
+      if (!turnstileToken){
+        valid=false;
+        if (capErrEl) capErrEl.style.display = "inline";
+        setStatus("Please complete the verification.");
+      }
 
+      if (!valid) return;
 
-  <!-- Footer yıl -->
+      // değerleri topla
+      const classes = Array.from(document.querySelectorAll("#class option:checked")).map(o=>o.value);
+      const roles   = Array.from(document.querySelectorAll("input[name='role']:checked")).map(x=>x.value);
+      const notes   = (document.getElementById("notes")?.value || "").trim();
+
+      // UI kilitle
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = .7;
+      setStatus("Submitting…");
+
+      // Discord payload
+      const content = `**New Guild Application** — ${character.value.trim()} @ ${realm.value.trim()}`;
+      const embed = {
+        title: `${character.value.trim()} @ ${realm.value.trim()}`,
+        description: notes || "—",
+        color: 0xF39C12,
+        fields: [
+          { name: "BattleTag", value: btag.value.trim(), inline: true },
+          { name: "Class(es)", value: (classes.length ? classes.join(", ") : "—"), inline: true },
+          { name: "Roles", value: (roles.length ? roles.join(", ") : "—"), inline: true },
+          { name: "Availability", value: availability.value.trim() || "—", inline: false },
+          { name: "Raider.IO", value: rio.value.trim(), inline: false },
+          { name: "Warcraft Logs", value: wcl.value.trim(), inline: false }
+        ],
+        timestamp: new Date().toISOString(),
+        footer: { text: "TWWMP Apply" }
+      };
+
+      try {
+        const resp = await fetch("/api/apply", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ turnstileToken, content, embeds:[embed] })
+        });
+        if (!resp.ok) throw new Error("Proxy failed: " + resp.status);
+        setStatus("Application received. Redirecting…", true);
+        window.location.href = "/thanks";
+      } catch (err) {
+        console.error(err);
+        setStatus("Submission failed. Please try again later.");
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = 1;
+        if (window.turnstile) window.turnstile.reset();
+        turnstileToken = "";
+      }
+    });
+  })();
+  </script>
+
+  <!-- Footer year -->
   <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
 
+  <!-- Site JS -->
   <script src="script.js"></script>
   <script>document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));</script>
+
+  <!-- Cloudflare Turnstile -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </body>
 </html>
