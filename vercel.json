@@ -1,17 +1,15 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    { "source": "/home",    "destination": "/" },
-    { "source": "/members", "destination": "/" },
-    { "source": "/raids",   "destination": "/" },
-    { "source": "/media",   "destination": "/" },
-
-    { "source": "/apply", "destination": "/apply.html" },
-    { "source": "/thank-you",   "destination": "/thank-you.html" }
-  ],
   "redirects": [
-    { "source": "/index.html", "destination": "/", "permanent": true }
-    { "source": "/thanks",     "destination": "/thank-you", "permanent": true }
+    { "source": "/index.html", "destination": "/", "permanent": true },
+    { "source": "/thanks", "destination": "/thank-you", "permanent": true }
+  ],
+  "rewrites": [
+    { "source": "/home", "destination": "/" },
+    { "source": "/members", "destination": "/" },
+    { "source": "/raids", "destination": "/" },
+    { "source": "/media", "destination": "/" },
+    { "source": "/apply", "destination": "/apply.html" }
   ]
 }
