@@ -1,4 +1,4 @@
-<!-- apply.html (final) -->
+<!-- apply.html (final with validation) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,11 +14,23 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
+  <style>
+    .error-message {
+      color: #ff6b6b;
+      font-size: 0.85rem;
+      margin-top: 4px;
+    }
+    .field input:invalid,
+    .field select:invalid,
+    .field textarea:invalid {
+      border-color: #ff6b6b;
+    }
+  </style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- Üst bar (index ile aynı) -->
+  <!-- Üst bar -->
   <header class="topbar" role="banner">
     <div class="brand">
       <span class="logo-dot" aria-hidden="true"></span> TWWMP
@@ -33,7 +45,7 @@
   </header>
 
   <main id="main">
-    <!-- Üst tanıtım kutusu -->
+    <!-- Hero -->
     <section id="apply-hero" class="parallax-bg" style="min-height:48vh; padding-top:120px; background-image:url('images/raid.jpg');">
       <div class="content-box" style="text-align:center;">
         <h1>Apply to The War Within My Pants</h1>
@@ -42,14 +54,12 @@
       </div>
     </section>
 
-    <!-- BAŞVURU FORMU (görünecek metinler İngilizce, açıklamalar Türkçe) -->
+    <!-- FORM -->
     <section id="apply" class="parallax-bg" aria-label="Guild application form" style="background-image:url('images/media.jpg');">
       <div class="content-box fade-in" style="max-width:860px; width:min(92vw,860px); text-align:left;">
         <h2 style="text-align:center;">Application Form</h2>
 
-        <!-- Form -->
         <form id="applyForm" novalidate>
-          <!-- Honeypot (bot tuzağı) -->
           <input type="text" name="website" id="website" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px;">
 
           <div class="form-grid">
@@ -69,43 +79,43 @@
             </div>
 
             <div class="field">
-  <label for="class">Class <span class="req">*</span></label>
-  <select id="class" name="class" multiple>
-    <option>Death Knight</option>
-    <option>Demon Hunter</option>
-    <option>Druid</option>
-    <option>Evoker</option>
-    <option>Hunter</option>
-    <option>Mage</option>
-    <option>Monk</option>
-    <option>Paladin</option>
-    <option>Priest</option>
-    <option>Rogue</option>
-    <option>Shaman</option>
-    <option>Warlock</option>
-    <option>Warrior</option>
-  </select>
-  <small class="hint">Hold CTRL (Windows) or CMD (Mac) to select multiple classes if you also play alts.</small>
-</div>
+              <label for="class">Class <span class="req">*</span></label>
+              <select id="class" name="class" multiple required>
+                <option>Death Knight</option>
+                <option>Demon Hunter</option>
+                <option>Druid</option>
+                <option>Evoker</option>
+                <option>Hunter</option>
+                <option>Mage</option>
+                <option>Monk</option>
+                <option>Paladin</option>
+                <option>Priest</option>
+                <option>Rogue</option>
+                <option>Shaman</option>
+                <option>Warlock</option>
+                <option>Warrior</option>
+              </select>
+              <small class="hint">Hold CTRL (Windows) or CMD (Mac) to select multiple classes if you also play alts.</small>
+            </div>
+          </div>
 
           <div class="field">
-  <label for="role">Preferred Roles <span class="req">*</span></label>
-  <div class="chips">
-    <label><input type="checkbox" name="role" value="Tank"> Tank</label>
-    <label><input type="checkbox" name="role" value="Healer"> Healer</label>
-    <label><input type="checkbox" name="role" value="DPS"> DPS</label>
-  </div>
-</div>
+            <label for="role">Preferred Roles <span class="req">*</span></label>
+            <div class="chips">
+              <label><input type="checkbox" name="role" value="Tank"> Tank</label>
+              <label><input type="checkbox" name="role" value="Healer"> Healer</label>
+              <label><input type="checkbox" name="role" value="DPS"> DPS</label>
+            </div>
+          </div>
 
           <div class="form-grid">
             <div class="field">
               <label for="rio">Raider.IO link</label>
-              <input id="rio" name="rio" placeholder="https://raider.io/characters/eu/twisting-nether/Toxarica" inputmode="url" />
+              <input id="rio" name="rio" placeholder="https://raider.io/..." inputmode="url" />
             </div>
-
             <div class="field">
               <label for="wcl">Warcraft Logs link</label>
-              <input id="wcl" name="wcl" placeholder="https://www.warcraftlogs.com/character/eu/ragnaros/chopthechop" inputmode="url" />
+              <input id="wcl" name="wcl" placeholder="https://www.warcraftlogs.com/..." inputmode="url" />
             </div>
           </div>
 
@@ -124,7 +134,7 @@
           </div>
 
           <div class="actions">
-            <button type="submit" class="button-3d pressable" id="applySubmit"><span>Submit Application</span></button>
+            <button type="submit" class="button-3d pressable"><span>Submit Application</span></button>
             <span id="applyStatus" role="status" aria-live="polite"></span>
           </div>
         </form>
@@ -132,47 +142,64 @@
     </section>
   </main>
 
-  <footer class="footer" role="contentinfo">
+  <footer class="footer">
     <div class="footer-inner">
-      <div class="footer-left">
-        <span>© <span id="year"></span> The War Within My Pants</span>
-      </div>
-      <ul class="footer-links" aria-label="Guild Links">
-        <li><a href="https://discord.gg/Zm7QF9D5DS" target="_blank" rel="noopener noreferrer">Discord</a></li>
-        <li><a href="https://raider.io/" target="_blank" rel="noopener noreferrer">Raider.IO</a></li>
-        <li><a href="https://www.warcraftlogs.com/" target="_blank" rel="noopener noreferrer">Warcraft Logs</a></li>
+      <div class="footer-left">© <span id="year"></span> The War Within My Pants</div>
+      <ul class="footer-links">
+        <li><a href="https://discord.gg/Zm7QF9D5DS" target="_blank">Discord</a></li>
+        <li><a href="https://raider.io/" target="_blank">Raider.IO</a></li>
+        <li><a href="https://www.warcraftlogs.com/" target="_blank">Warcraft Logs</a></li>
         <li><a href="index.html#hero">Back to top</a></li>
       </ul>
     </div>
   </footer>
 
+  <!-- Validation script -->
   <script>
-  document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("applyForm");
-    if (form) {
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("applyForm");
+
       form.addEventListener("submit", function(e) {
-        e.preventDefault(); // Sayfanın kendi kendine yenilenmesini engelle
-        // Burada backend'e POST gönderebilirsin (fetch ile)
-        // Şimdilik direkt teşekkür sayfasına yönlendiriyoruz:
-        window.location.href = "thank-you.html";
+        e.preventDefault();
+        let valid = true;
+
+        // Eski hataları sil
+        form.querySelectorAll(".error-message").forEach(el => el.remove());
+
+        // Required alanları kontrol et
+        form.querySelectorAll("[required]").forEach(field => {
+          if (!field.value.trim()) {
+            valid = false;
+            const msg = document.createElement("div");
+            msg.className = "error-message";
+            msg.textContent = "This field is required.";
+            field.parentNode.appendChild(msg);
+          }
+        });
+
+        // En az 1 role seçilmiş mi
+        const roles = form.querySelectorAll("input[name='role']:checked");
+        if (roles.length === 0) {
+          valid = false;
+          const roleField = form.querySelector("#role")?.parentNode || form.querySelector(".chips");
+          const msg = document.createElement("div");
+          msg.className = "error-message";
+          msg.textContent = "Please select at least one role.";
+          roleField.appendChild(msg);
+        }
+
+        if (valid) {
+          window.location.href = "thank-you.html";
+        }
       });
-    }
-  });
-</script>
-
-
-  <!-- Yıl doldurma -->
-  <script>const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();</script>
-
-  <!-- fade-in animasyonlarını tetiklemek için ana script -->
-  <script src="script.js"></script>
-
-  <!-- Bu sayfada görünürlüğü garanti etmek için küçük bir yedek (fade-in'leri hemen görünür yapar) -->
-  <script>
-    document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));
+    });
   </script>
 
-  <!-- Discord'a gönderim yapan form scripti -->
+  <!-- Footer yıl -->
+  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+
+  <script src="script.js"></script>
+  <script>document.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible'));</script>
   <script src="apply.js"></script>
 </body>
 </html>
