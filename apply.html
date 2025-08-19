@@ -8,28 +8,15 @@
   <link rel="canonical" href="https://thewarwithinmypants.tk/apply.html" />
   <meta name="theme-color" content="#0b0f17" />
 
-  <!-- Fonts & Styles -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Social -->
-  <meta property="og:title" content="Apply — The War Within My Pants" />
-  <meta property="og:description" content="Fill out the guild application and our officers will contact you on Discord." />
-  <meta property="og:image" content="images/og-cover.jpg" />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://thewarwithinmypants.tk/apply.html" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Apply — The War Within My Pants" />
-  <meta name="twitter:description" content="Guild application form for raids and Mythic+." />
-  <meta name="twitter:image" content="images/og-cover.jpg" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- Topbar (index'tekiyle aynı) -->
   <header class="topbar" role="banner">
     <div class="brand">
       <span class="logo-dot" aria-hidden="true"></span> TWWMP
@@ -44,31 +31,25 @@
   </header>
 
   <main id="main">
-    <!-- APPLY PAGE HERO (statik arka plan) -->
-    <section id="apply-hero" class="parallax-bg" style="
-      min-height: 48vh; padding-top: 120px;
-      background-image: url('images/raid.jpg');
-    ">
+    <section id="apply-hero" class="parallax-bg" style="min-height:48vh; padding-top:120px; background-image:url('images/raid.jpg');">
       <div class="content-box" style="text-align:center;">
         <h1>Apply to The War Within My Pants</h1>
-        <p>Tell us about your character and availability. Your answers will be sent to our officers on Discord.</p>
+        <p>Fill out this form to join our guild. Your answers will be sent directly to the officers on Discord.</p>
         <p style="margin-top:8px;"><a href="index.html" class="button small">← Back to Home</a></p>
       </div>
     </section>
 
-    <!-- APPLY FORM -->
-    <section id="apply" class="parallax-bg" aria-label="Guild application form" style="background-image: url('images/media.jpg');">
+    <section id="apply" class="parallax-bg" aria-label="Guild application form" style="background-image:url('images/media.jpg');">
       <div class="content-box fade-in" style="max-width:860px; width:min(92vw,860px); text-align:left;">
         <h2 style="text-align:center;">Application Form</h2>
 
         <form id="applyForm" novalidate>
-          <!-- Honeypot -->
           <input type="text" name="website" id="website" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px;">
 
           <div class="form-grid">
             <div class="field">
               <label for="character">Character Name<span class="req">*</span></label>
-              <input id="character" name="character" required placeholder="Chop" />
+              <input id="character" name="character" required placeholder="Example: Chop" />
             </div>
 
             <div class="field">
@@ -103,7 +84,7 @@
           </div>
 
           <div class="field">
-            <span class="label">Roles (çoklu seçim)<span class="req">*</span></span>
+            <span class="label">Roles (multiple allowed)<span class="req">*</span></span>
             <div class="chips">
               <label><input type="checkbox" name="roles" value="Tank"> Tank</label>
               <label><input type="checkbox" name="roles" value="Healer"> Healer</label>
@@ -126,16 +107,16 @@
 
           <div class="field">
             <label for="availability">Raid Times Availability<span class="req">*</span></label>
-            <textarea id="availability" name="availability" required rows="2" placeholder="Wed & Sun — 20:30 server; çoğu hafta uygunum."></textarea>
+            <textarea id="availability" name="availability" required rows="2" placeholder="Example: Wed & Sun — 20:30 server; usually available."></textarea>
           </div>
 
           <div class="field">
             <label for="notes">Anything else we should know?</label>
-            <textarea id="notes" name="notes" rows="3" placeholder="Örn: sınıf offspec, geçmiş tecrübeler, M+ io, hedefler vb."></textarea>
+            <textarea id="notes" name="notes" rows="3" placeholder="Optional: offspec, previous experience, M+ score, goals…"></textarea>
           </div>
 
           <div class="agree">
-            <label><input type="checkbox" id="consent" required> Cevaplarımın Discord’da officer’larla paylaşılmasını kabul ediyorum.</label>
+            <label><input type="checkbox" id="consent" required> I agree that my answers will be shared with the officers on Discord.</label>
           </div>
 
           <div class="actions">
@@ -163,10 +144,7 @@
     </div>
   </footer>
 
-  <script>
-    // Yılı doldur
-    const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
-  </script>
+  <script>const y=document.getElementById('year'); if(y) y.textContent=new Date().getFullYear();</script>
   <script src="apply.js"></script>
 </body>
 </html>
