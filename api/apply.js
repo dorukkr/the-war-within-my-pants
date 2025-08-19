@@ -46,9 +46,9 @@
     const consent   = form.consent.checked;
 
     // Basit doğrulama
-    if (!character || !realm || !btag || !clazz || roles.length===0 || !availability || !consent) {
-      setStatus("Please fill in all required fields (*) and agree to the consent box.");
-      return;
+  if (!character || !realm || !btag || !availability || !rio || !wcl) {
+  return res.status(400).json({ ok: false, error: 'Missing required fields' });
+}
     }
     if (!validURL(rio) || !validURL(wcl)) {
       setStatus("Please provide valid URLs for Raider.IO / Warcraft Logs (or leave empty).");
