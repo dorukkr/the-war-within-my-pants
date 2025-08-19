@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Apply — The War Within My Pants</title>
+  <meta name="description" content="Apply to The War Within My Pants — WoW guild recruitment form." />
+  <link rel="canonical" href="https://thewarwithinmypants.tk/apply.html" />
+  <meta name="theme-color" content="#0b0f17" />
+
+  <!-- Fonts & Styles -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- Social -->
+  <meta property="og:title" content="Apply — The War Within My Pants" />
+  <meta property="og:description" content="Fill out the guild application and our officers will contact you on Discord." />
+  <meta property="og:image" content="images/og-cover.jpg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://thewarwithinmypants.tk/apply.html" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Apply — The War Within My Pants" />
+  <meta name="twitter:description" content="Guild application form for raids and Mythic+." />
+  <meta name="twitter:image" content="images/og-cover.jpg" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- Topbar (index'tekiyle aynı) -->
+  <header class="topbar" role="banner">
+    <div class="brand">
+      <span class="logo-dot" aria-hidden="true"></span> TWWMP
+    </div>
+    <nav class="nav" aria-label="Primary">
+      <a href="index.html#hero">Home</a>
+      <a href="index.html#members">Members</a>
+      <a href="index.html#raids">Raids</a>
+      <a href="index.html#media">Media</a>
+      <a class="button small" target="_blank" rel="noopener noreferrer" href="https://discord.gg/Zm7QF9D5DS">Discord</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- APPLY PAGE HERO (statik arka plan) -->
+    <section id="apply-hero" class="parallax-bg" style="
+      min-height: 48vh; padding-top: 120px;
+      background-image: url('images/raid.jpg');
+    ">
+      <div class="content-box" style="text-align:center;">
+        <h1>Apply to The War Within My Pants</h1>
+        <p>Tell us about your character and availability. Your answers will be sent to our officers on Discord.</p>
+        <p style="margin-top:8px;"><a href="index.html" class="button small">← Back to Home</a></p>
+      </div>
+    </section>
+
+    <!-- APPLY FORM -->
+    <section id="apply" class="parallax-bg" aria-label="Guild application form" style="background-image: url('images/media.jpg');">
+      <div class="content-box fade-in" style="max-width:860px; width:min(92vw,860px); text-align:left;">
+        <h2 style="text-align:center;">Application Form</h2>
+
+        <form id="applyForm" novalidate>
+          <!-- Honeypot -->
+          <input type="text" name="website" id="website" autocomplete="off" tabindex="-1" aria-hidden="true" style="position:absolute; left:-9999px;">
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="character">Character Name<span class="req">*</span></label>
+              <input id="character" name="character" required placeholder="Chop" />
+            </div>
+
+            <div class="field">
+              <label for="realm">Realm<span class="req">*</span></label>
+              <input id="realm" name="realm" required placeholder="Draenor (EU)" />
+            </div>
+
+            <div class="field">
+              <label for="btag">BattleTag<span class="req">*</span></label>
+              <input id="btag" name="btag" required placeholder="Name#1234" />
+            </div>
+
+            <div class="field">
+              <label for="clazz">Class<span class="req">*</span></label>
+              <select id="clazz" name="clazz" required>
+                <option value="">Select a class</option>
+                <option>Death Knight</option>
+                <option>Demon Hunter</option>
+                <option>Druid</option>
+                <option>Evoker</option>
+                <option>Hunter</option>
+                <option>Mage</option>
+                <option>Monk</option>
+                <option>Paladin</option>
+                <option>Priest</option>
+                <option>Rogue</option>
+                <option>Shaman</option>
+                <option>Warlock</option>
+                <option>Warrior</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <span class="label">Roles (çoklu seçim)<span class="req">*</span></span>
+            <div class="chips">
+              <label><input type="checkbox" name="roles" value="Tank"> Tank</label>
+              <label><input type="checkbox" name="roles" value="Healer"> Healer</label>
+              <label><input type="checkbox" name="roles" value="Melee DPS"> Melee DPS</label>
+              <label><input type="checkbox" name="roles" value="Ranged DPS"> Ranged DPS</label>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="rio">Raider.IO link</label>
+              <input id="rio" name="rio" placeholder="https://raider.io/characters/eu/draenor/Chop" inputmode="url" />
+            </div>
+
+            <div class="field">
+              <label for="wcl">Warcraft Logs link</label>
+              <input id="wcl" name="wcl" placeholder="https://www.warcraftlogs.com/character/eu/draenor/Chop" inputmode="url" />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="availability">Raid Times Availability<span class="req">*</span></label>
+            <textarea id="availability" name="availability" required rows="2" placeholder="Wed & Sun — 20:30 server; çoğu hafta uygunum."></textarea>
+          </div>
+
+          <div class="field">
+            <label for="notes">Anything else we should know?</label>
+            <textarea id="notes" name="notes" rows="3" placeholder="Örn: sınıf offspec, geçmiş tecrübeler, M+ io, hedefler vb."></textarea>
+          </div>
+
+          <div class="agree">
+            <label><input type="checkbox" id="consent" required> Cevaplarımın Discord’da officer’larla paylaşılmasını kabul ediyorum.</label>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="button-3d pressable" id="applySubmit">
+              <span>Submit Application</span>
+            </button>
+            <span id="applyStatus" role="status" aria-live="polite"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="footer-inner">
+      <div class="footer-left">
+        <span>© <span id="year"></span> The War Within My Pants</span>
+      </div>
+      <ul class="footer-links" aria-label="Guild Links">
+        <li><a href="https://discord.gg/Zm7QF9D5DS" target="_blank" rel="noopener noreferrer">Discord</a></li>
+        <li><a href="https://raider.io/" target="_blank" rel="noopener noreferrer">Raider.IO</a></li>
+        <li><a href="https://www.warcraftlogs.com/" target="_blank" rel="noopener noreferrer">Warcraft Logs</a></li>
+        <li><a href="index.html#hero">Back to top</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    // Yılı doldur
+    const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+  </script>
+  <script src="apply.js"></script>
+</body>
+</html>
