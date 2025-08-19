@@ -1,102 +1,80 @@
-/* apply.js — başvuru formunu Vercel proxy'ye gönderir
-   Görünen metinler: İngilizce, açıklamalar: Türkçe
-*/
-(() => {
-  const form = document.getElementById('applyForm');
-  if (!form) return;
+// /api/apply.js  (Vercel Serverless - CommonJS)
+// Bu endpoint client'tan gelen başvuruyu Discord Webhook'a iletir.
 
-  // Proxy endpoint (Vercel)
-  const PROXY_URL = "/api/apply"; // aynı domain altında çağrılır
-  // İsteğe bağlı shared secret — Vercel env ile eşleşmeli
-  const APPLY_SECRET = "Gk4vJ2_n4"; // <- güvenli bir stringe değiştir (örn. 32+ karakter)
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') {
+    res.status(405).json({ ok: false, error: 'Method not allowed' });
+    return;
+  }
 
-  const statusEl  = document.getElementById('applyStatus');
-  const submitBtn = document.getElementById('applySubmit');
+  try {
+    const body = req.body || {};
+    const {
+      character = '', realm = '', btag = '',
+      classes = [], roles = [],
+      rio = '', wcl = '', availability = '', notes = '',
+      consent = false,
+      website = '', // honeypot
+      meta = {}
+    } = body;
 
-  const setStatus = (text, ok=false) => {
-    if (!statusEl) return;
-    statusEl.textContent = text || '';
-    statusEl.style.color = ok ? '#4ade80' : '#ffd36b';
-  };
+    // Bot tuzağı: doldurulduysa sükunetle OK dön
+    if (website) { res.status(200).json({ ok: true }); return; }
 
-  const validURL = (v) => {
-    if (!v) return true;
-    try { new URL(v); return true; } catch { return false; }
-  };
-
-  const getRoles = () =>
-    Array.from(form.querySelectorAll('input[name="roles"]:checked')).map(x=>x.value);
-
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    // Honeypot (bot yakalama)
-    if ((form.website && form.website.value.trim() !== "")) return;
-
-    // Alanları topla
-    const character = form.character.value.trim();
-    const realm     = form.realm.value.trim();
-    const btag      = form.btag.value.trim();
-    const clazz     = form.clazz.value;
-    const roles     = getRoles();
-    const rio       = form.rio.value.trim();
-    const wcl       = form.wcl.value.trim();
-    const availability = form.availability.value.trim();
-    const notes     = form.notes.value.trim();
-    const consent   = form.consent.checked;
-
-    // Basit doğrulama
-  if (!character || !realm || !btag || !availability || !rio || !wcl) {
-  return res.status(400).json({ ok: false, error: 'Missing required fields' });
-}
+    // Zorunlu alanlar (senin isteğine göre RIO/WCL dahil)
+    if (!character || !realm || !btag || !availability || !rio || !wcl) {
+      res.status(400).json({ ok: false, error: 'Missing required fields' });
+      return;
     }
-    if (!validURL(rio) || !validURL(wcl)) {
-      setStatus("Please provide valid URLs for Raider.IO / Warcraft Logs (or leave empty).");
+    // İsteğe bağlı: consent zorunlu kılmak istersen aç:
+    if (!consent) {
+      res.status(400).json({ ok: false, error: 'Consent is required' });
       return;
     }
 
-    // UI kilitle
-    submitBtn.disabled = true;
-    submitBtn.style.opacity = .7;
-    setStatus("Submitting…");
+    // URL kontrolü
+    const isUrl = (u) => { try { new URL(u); return true; } catch { return false; } };
+    if (!isUrl(rio) || !isUrl(wcl)) {
+      res.status(400).json({ ok: false, error: 'Invalid URL' });
+      return;
+    }
 
-    // Discord'a gidecek payload'ı proxy ile aynı biçimde hazırlıyoruz
-    const content = `**New Guild Application** — ${character} @ ${realm}`;
+    // Discord mesajını hazırla (embed'li)
     const embed = {
       title: `${character} @ ${realm}`,
-      description: notes || "—",
+      description: notes || '—',
       color: 0xF39C12,
       fields: [
-        { name: "BattleTag", value: btag, inline: true },
-        { name: "Class", value: clazz, inline: true },
-        { name: "Roles", value: roles.join(", "), inline: true },
-        { name: "Availability", value: availability || "—", inline: false },
-        ...(rio ? [{ name: "Raider.IO", value: rio, inline: false }] : []),
-        ...(wcl ? [{ name: "Warcraft Logs", value: wcl, inline: false }] : []),
+        { name: 'BattleTag', value: btag, inline: true },
+        { name: 'Classes', value: classes.length ? classes.join(', ') : '—', inline: true },
+        { name: 'Roles', value: roles.length ? roles.join(', ') : '—', inline: true },
+        { name: 'Availability', value: availability || '—', inline: false },
+        { name: 'Raider.IO', value: rio, inline: false },
+        { name: 'Warcraft Logs', value: wcl, inline: false },
       ],
       timestamp: new Date().toISOString(),
-      footer: { text: "TWWMP Apply" }
+      footer: { text: 'TWWMP Apply' }
     };
 
-    try {
-      const res = await fetch(PROXY_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-apply-secret": APPLY_SECRET, // backend ile eşleşmeli
-        },
-        body: JSON.stringify({ content, embeds: [embed] })
-      });
-
-      if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`);
-
-      // Başarılıysa teşekkür sayfasına yönlendir
-      window.location.href = "thank-you.html";
-    } catch (err) {
-      console.error(err);
-      setStatus("Submission failed. Please try again later.");
-      submitBtn.disabled = false;
-      submitBtn.style.opacity = 1;
+    const WEBHOOK = process.env.DISCORD_WEBHOOK_URL;
+    if (!WEBHOOK) {
+      res.status(500).json({ ok:false, error:'Missing DISCORD_WEBHOOK_URL' });
+      return;
     }
-  });
-})();
+
+    // Discord'a gönder
+    await fetch(WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: `**New Guild Application** — ${character} @ ${realm}\n${meta?.ts ? `Submitted: ${meta.ts}` : ''}`,
+        embeds: [embed]
+      })
+    });
+
+    res.status(200).json({ ok: true });
+  } catch (err) {
+    console.error('apply api error:', err);
+    res.status(500).json({ ok: false, error: 'Unexpected error' });
+  }
+};
