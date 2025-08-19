@@ -1,31 +1,37 @@
+/* apply.js — başvuru formunu Discord Webhook'a gönderir
+   Görünen metinler: İngilizce, açıklamalar: Türkçe
+*/
 (() => {
   const form = document.getElementById('applyForm');
   if (!form) return;
 
-  const WEBHOOK_URL = "https://discord.com/api/webhooks/1407331789961297940/-xUYG37U297lCJSxm8-GkN2ukG3ta2utK3lnBaxtwm3Fh2_XMkACsAgxzCD-SAtSDZCC"; // your webhook
+  // TODO: Kendi webhook URL'ni buraya koy (Discord → Integrations → Webhooks)
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/XXXX/XXXX"; // <-- DEĞİŞTİR
 
   const statusEl  = document.getElementById('applyStatus');
   const submitBtn = document.getElementById('applySubmit');
 
-  function setStatus(text, ok=false){
+  // — küçük yardımcılar —
+  const setStatus = (text, ok=false) => {
+    if (!statusEl) return;
     statusEl.textContent = text || '';
     statusEl.style.color = ok ? '#4ade80' : '#ffd36b';
-  }
-
-  function getRoles(){
-    return Array.from(form.querySelectorAll('input[name="roles"]:checked')).map(x=>x.value);
-  }
-
-  function validURL(v){
+  };
+  const validURL = (v) => {
     if (!v) return true;
     try { new URL(v); return true; } catch { return false; }
-  }
+  };
+  const getRoles = () =>
+    Array.from(form.querySelectorAll('input[name="roles"]:checked')).map(x=>x.value);
 
+  // — form submit —
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if ((form.website && form.website.value.trim() !== "")) return; // honeypot
+    // Honeypot (bot yakalama)
+    if ((form.website && form.website.value.trim() !== "")) return;
 
+    // Alanları topla
     const character = form.character.value.trim();
     const realm     = form.realm.value.trim();
     const btag      = form.btag.value.trim();
@@ -37,6 +43,7 @@
     const notes     = form.notes.value.trim();
     const consent   = form.consent.checked;
 
+    // Basit doğrulama
     if (!character || !realm || !btag || !clazz || roles.length===0 || !availability || !consent) {
       setStatus("Please fill in all required fields (*) and agree to the consent box.");
       return;
@@ -46,15 +53,17 @@
       return;
     }
 
+    // UI kilitle
     submitBtn.disabled = true;
     submitBtn.style.opacity = .7;
     setStatus("Submitting…");
 
+    // Discord içeriği (embed'li, temiz ve okunaklı)
     const content = `**New Guild Application** — ${character} @ ${realm}`;
     const embed = {
       title: `${character} @ ${realm}`,
       description: notes || "—",
-      color: 0xF39C12,
+      color: 0xF39C12, // turuncu/gold
       fields: [
         { name: "BattleTag", value: btag, inline: true },
         { name: "Class", value: clazz, inline: true },
@@ -71,14 +80,17 @@
       const res = await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        // Webhook'a direkt embed gönderiyoruz
         body: JSON.stringify({ content, embeds: [embed] })
       });
+
       if (!res.ok) throw new Error(`Webhook HTTP ${res.status}`);
+
+      // Başarılıysa teşekkür sayfasına yönlendir
       window.location.href = "thank-you.html";
     } catch (err) {
       console.error(err);
       setStatus("Submission failed. Please check the webhook URL or your connection.");
-    } finally {
       submitBtn.disabled = false;
       submitBtn.style.opacity = 1;
     }
