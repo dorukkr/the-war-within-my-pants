@@ -7,7 +7,7 @@
     { "source": "/raids",   "destination": "/" },
     { "source": "/media",   "destination": "/" },
 
-    { "source": "/applynow", "destination": "/apply.html" },
+    { "source": "/apply", "destination": "/apply.html" },
     { "source": "/thanks",   "destination": "/thank-you.html" }
   ],
   "redirects": [
