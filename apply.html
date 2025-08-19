@@ -283,7 +283,7 @@
         });
         if (!resp.ok) throw new Error("Proxy failed: " + resp.status);
         setStatus("Application received. Redirecting…", true);
-        window.location.href = "/thanks";
+        window.location.href = "/thank-you";
       } catch (err) {
         console.error(err);
         setStatus("Submission failed. Please try again later.");
