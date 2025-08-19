@@ -2,7 +2,7 @@
   const form = document.getElementById('applyForm');
   if (!form) return;
 
-  const WEBHOOK_URL = "https://discord.com/api/webhooks/XXXXXXXX/XXXXXXXX"; // your webhook
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/1407331789961297940/-xUYG37U297lCJSxm8-GkN2ukG3ta2utK3lnBaxtwm3Fh2_XMkACsAgxzCD-SAtSDZCC"; // your webhook
 
   const statusEl  = document.getElementById('applyStatus');
   const submitBtn = document.getElementById('applySubmit');
