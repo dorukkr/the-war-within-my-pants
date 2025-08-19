@@ -69,26 +69,33 @@
             </div>
 
             <div class="field">
-              <label for="clazz">Class<span class="req">*</span></label>
-              <select id="clazz" name="clazz" required>
-                <option value="">Select a class</option>
-                <option>Death Knight</option><option>Demon Hunter</option><option>Druid</option>
-                <option>Evoker</option><option>Hunter</option><option>Mage</option>
-                <option>Monk</option><option>Paladin</option><option>Priest</option>
-                <option>Rogue</option><option>Shaman</option><option>Warlock</option><option>Warrior</option>
-              </select>
-            </div>
-          </div>
+  <label for="class">Class <span class="req">*</span></label>
+  <select id="class" name="class" multiple>
+    <option>Death Knight</option>
+    <option>Demon Hunter</option>
+    <option>Druid</option>
+    <option>Evoker</option>
+    <option>Hunter</option>
+    <option>Mage</option>
+    <option>Monk</option>
+    <option>Paladin</option>
+    <option>Priest</option>
+    <option>Rogue</option>
+    <option>Shaman</option>
+    <option>Warlock</option>
+    <option>Warrior</option>
+  </select>
+  <small class="hint">Hold CTRL (Windows) or CMD (Mac) to select multiple classes if you also play alts.</small>
+</div>
 
           <div class="field">
-            <span class="label">Roles (multiple allowed)<span class="req">*</span></span>
-            <div class="chips">
-              <label><input type="checkbox" name="roles" value="Tank"> Tank</label>
-              <label><input type="checkbox" name="roles" value="Healer"> Healer</label>
-              <label><input type="checkbox" name="roles" value="Melee DPS"> Melee DPS</label>
-              <label><input type="checkbox" name="roles" value="Ranged DPS"> Ranged DPS</label>
-            </div>
-          </div>
+  <label for="role">Preferred Roles <span class="req">*</span></label>
+  <div class="chips">
+    <label><input type="checkbox" name="role" value="Tank"> Tank</label>
+    <label><input type="checkbox" name="role" value="Healer"> Healer</label>
+    <label><input type="checkbox" name="role" value="DPS"> DPS</label>
+  </div>
+</div>
 
           <div class="form-grid">
             <div class="field">
