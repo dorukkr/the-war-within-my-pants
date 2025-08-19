@@ -12,5 +12,6 @@
   ],
   "redirects": [
     { "source": "/index.html", "destination": "/", "permanent": true }
+    { "source": "/thanks",     "destination": "/thank-you", "permanent": true }
   ]
 }
