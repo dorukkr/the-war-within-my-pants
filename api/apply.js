@@ -1,7 +1,8 @@
 // /api/apply.js — Vercel Serverless (CommonJS)
-// - Cloudflare Turnstile doğrulaması
-// - Discord Webhook'a iletim
-// - Hem yeni "content+embeds" payload'ını, hem de eski alan bazlı payload'ı destekler
+// - Cloudflare Turnstile verification
+// - Discord Webhook send
+// - Supports both new (content+embeds) and legacy field payloads
+// - Mentions officers role via OFFICERS_ROLE_ID env
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
@@ -10,8 +11,9 @@ module.exports = async (req, res) => {
   }
 
   try {
-    const WEBHOOK = process.env.DISCORD_WEBHOOK_URL;
+    const WEBHOOK   = process.env.DISCORD_WEBHOOK_URL;
     const CF_SECRET = process.env.CF_TURNSTILE_SECRET;
+    const ROLE_ID   = process.env.OFFICERS_ROLE_ID || "";
 
     if (!WEBHOOK || !CF_SECRET) {
       res.status(500).json({ ok: false, error: "Server not configured" });
@@ -20,35 +22,30 @@ module.exports = async (req, res) => {
 
     const body = req.body || {};
 
-    // 1) Turnstile token (client tarafında apply.html -> turnstileToken gönderiyoruz)
+    // 1) Turnstile token (client: apply.html -> turnstileToken)
     const turnstileToken =
       body.turnstileToken ||
-      body["cf-turnstile-response"] || // fallback (form name default'u)
+      body["cf-turnstile-response"] || // fallback
       "";
-
     if (!turnstileToken) {
       res.status(400).json({ ok: false, error: "Missing Turnstile token" });
       return;
     }
 
-    // İstemci IP (opsiyonel ama önerilir)
+    // Optional: client IP for verification
     const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim();
 
-    // 2) Turnstile doğrulaması
-    const verifyRes = await fetch(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          secret: CF_SECRET,
-          response: String(turnstileToken),
-          ...(ip ? { remoteip: ip } : {})
-        })
-      }
-    );
+    // 2) Verify Turnstile
+    const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        secret: CF_SECRET,
+        response: String(turnstileToken),
+        ...(ip ? { remoteip: ip } : {})
+      })
+    });
     const verify = await verifyRes.json();
-
     if (!verify.success) {
       res.status(400).json({
         ok: false,
@@ -58,11 +55,11 @@ module.exports = async (req, res) => {
       return;
     }
 
-    // 3) Payload'ı hazırla
+    // 3) Build message (prefer content+embeds if provided)
     let content = body.content;
-    let embeds = body.embeds;
+    let embeds  = body.embeds;
 
-    // Eğer embed gelmemişse, eski alanları kullanarak embed oluştur
+    // If no embeds provided, construct from legacy fields
     if (!embeds) {
       const {
         character = "", realm = "", btag = "",
@@ -73,10 +70,10 @@ module.exports = async (req, res) => {
         meta = {}
       } = body;
 
-      // Honeypot: doluysa sessizce OK
+      // Honeypot: if filled, quietly OK
       if (website) { res.status(200).json({ ok: true }); return; }
 
-      // Zorunlu alanlar (RIO/WCL dahil)
+      // Required fields (incl. RIO/WCL)
       const isUrl = (u) => { try { new URL(u); return true; } catch { return false; } };
       if (!character || !realm || !btag || !availability || !rio || !wcl) {
         res.status(400).json({ ok: false, error: "Missing required fields" });
@@ -91,19 +88,19 @@ module.exports = async (req, res) => {
         return;
       }
 
-      content = `**New Guild Application** — ${character} @ ${realm}\n${meta?.ts ? `Submitted: ${meta.ts}` : ""}`;
+      content = `**New Guild Application** — ${character} @ ${realm}${meta?.ts ? `\nSubmitted: ${meta.ts}` : ""}`;
       embeds = [
         {
           title: `${character} @ ${realm}`,
           description: notes || "—",
           color: 0xF39C12,
           fields: [
-            { name: "BattleTag", value: btag, inline: true },
-            { name: "Class(es)", value: classes.length ? classes.join(", ") : "—", inline: true },
-            { name: "Roles", value: roles.length ? roles.join(", ") : "—", inline: true },
-            { name: "Availability", value: availability || "—", inline: false },
-            { name: "Raider.IO", value: rio, inline: false },
-            { name: "Warcraft Logs", value: wcl, inline: false }
+            { name: "BattleTag",  value: btag,                                   inline: true  },
+            { name: "Class(es)",  value: classes.length ? classes.join(", ") : "—", inline: true  },
+            { name: "Roles",      value: roles.length   ? roles.join(", ")   : "—", inline: true  },
+            { name: "Availability", value: availability || "—",                 inline: false },
+            { name: "Raider.IO",    value: rio,                                  inline: false },
+            { name: "Warcraft Logs",value: wcl,                                  inline: false }
           ],
           timestamp: new Date().toISOString(),
           footer: { text: "TWWMP Apply" }
@@ -111,17 +108,21 @@ module.exports = async (req, res) => {
       ];
     }
 
-    // 4) Discord'a gönder
+    // 4) Role mention + allowed_mentions to restrict pings
+    const messagePayload = {
+      content: `${ROLE_ID ? `<@&${ROLE_ID}> ` : ""}${content || "New application"}`,
+      embeds: Array.isArray(embeds) ? embeds : [],
+      allowed_mentions: ROLE_ID ? { parse: [], roles: [ROLE_ID] } : { parse: [] }
+    };
+
+    // 5) Send to Discord
     const discordResp = await fetch(WEBHOOK, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "User-Agent": "TWWMP-Apply/1.0"
       },
-      body: JSON.stringify({
-        content: content || "New application",
-        embeds: Array.isArray(embeds) ? embeds : []
-      })
+      body: JSON.stringify(messagePayload)
     });
 
     if (!discordResp.ok) {
