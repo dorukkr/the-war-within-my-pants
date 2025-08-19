@@ -8,6 +8,25 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
+  <!-- Fantasy başlık fontu (Cinzel) -->
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&display=swap" rel="stylesheet">
+
+<!-- Favicon (dosyayı images/favicon.png olarak ekle) -->
+<link rel="icon" type="image/png" href="images/favicon.png" sizes="32x32">
+<meta name="theme-color" content="#0d0d1a">
+
+<!-- Open Graph -->
+<meta property="og:title" content="The War Within My Pants">
+<meta property="og:description" content="WoW guild — raids, Mythic+, media and Discord.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="images/og-cover.jpg">
+<meta property="og:url" content="https://your-domain.example/">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The War Within My Pants">
+<meta name="twitter:description" content="WoW guild — raids, Mythic+, media and Discord.">
+<meta name="twitter:image" content="images/og-cover.jpg">
 </head>
 <body>
   <!-- Top Navigation -->
@@ -109,9 +128,20 @@
     </section>
   </main>
 
-  <footer class="footer">
-    <span>© <span id="year"></span> The War Within My Pants</span>
-  </footer>
+  <footer class="footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-left">
+      <span>© <span id="year"></span> The War Within My Pants</span>
+    </div>
+    <ul class="footer-links" aria-label="Guild Links">
+      <li><a href="https://discord.gg/Zm7QF9D5DS" target="_blank" rel="noopener">Discord</a></li>
+      <li><a href="https://raider.io/" target="_blank" rel="noopener">Raider.IO</a></li>
+      <li><a href="https://www.warcraftlogs.com/" target="_blank" rel="noopener">Warcraft Logs</a></li>
+      <li><a href="#hero">Back to top</a></li>
+    </ul>
+  </div>
+</footer>
+
 
   <script src="script.js"></script>
 </body>
