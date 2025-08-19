@@ -74,8 +74,7 @@
         body: JSON.stringify({ content, embeds: [embed] })
       });
       if (!res.ok) throw new Error(`Webhook HTTP ${res.status}`);
-      setStatus("Your application has been submitted! Officers will get back to you soon.", true);
-      form.reset();
+      window.location.href = "thank-you.html";
     } catch (err) {
       console.error(err);
       setStatus("Submission failed. Please check the webhook URL or your connection.");
