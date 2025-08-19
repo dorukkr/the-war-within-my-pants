@@ -225,13 +225,13 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
    OVERRIDES: Members Image Size
    ========================= */
 #members .members-container{
-  max-width: 7600px !important;
+  max-width: 700px !important;
   width: 100% !important;
   margin: 0 auto !important;
 }
 #members .members-container .members-image{
   width: 100% !important;
-  max-width: 520px !important;
+  max-width: 460px !important;
   height: auto !important;
   margin: 0 auto !important;
   display: block !important;
