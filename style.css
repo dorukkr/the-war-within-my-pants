@@ -184,6 +184,30 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
   z-index: 3;
   box-shadow: 0 8px 24px rgba(0,0,0,.6);
 }
+/* Eski katmanları ve container arkaplanını kapat */
+#members::before,
+#members::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  animation: none !important;
+}
+
+.members-container {
+  background: none !important;
+  padding: 0 !important;   /* padding'i section verecek */
+  border-radius: 0 !important;
+}
+
+/* Sadece section'a aurora arkaplanı uygula */
+#members {
+  position: relative;
+  padding: 80px 20px !important;
+  background-image: url('images/members-bg-aurora.png') !important;
+  background-position: center center !important;
+  background-size: cover !important;
+  background-repeat: no-repeat !important;
+}
 
 /* =========================
    Raids / Cards / Timeline
