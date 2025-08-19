@@ -1,18 +1,13 @@
-/* Apply form -> Discord Webhook */
 (() => {
   const form = document.getElementById('applyForm');
   if (!form) return;
 
-  // !!! BURAYA KENDİ WEBHOOK'UNU KOY !!!
-  // Doğrudan webhook kullanırsan URL herkes tarafından görülebilir.
-  // İstersen Vercel proxy ile gizleyebilirsin (aşağıda not var).
-  const WEBHOOK_URL = "https://discord.com/api/webhooks/XXXXXXXX/XXXXXXXX"; // <- değiştir
+  const WEBHOOK_URL = "https://discord.com/api/webhooks/XXXXXXXX/XXXXXXXX"; // your webhook
 
   const statusEl  = document.getElementById('applyStatus');
   const submitBtn = document.getElementById('applySubmit');
 
   function setStatus(text, ok=false){
-    if (!statusEl) return;
     statusEl.textContent = text || '';
     statusEl.style.color = ok ? '#4ade80' : '#ffd36b';
   }
@@ -29,8 +24,7 @@
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    // Honeypot
-    if ((form.website && form.website.value.trim() !== "")) return;
+    if ((form.website && form.website.value.trim() !== "")) return; // honeypot
 
     const character = form.character.value.trim();
     const realm     = form.realm.value.trim();
@@ -44,19 +38,19 @@
     const consent   = form.consent.checked;
 
     if (!character || !realm || !btag || !clazz || roles.length===0 || !availability || !consent) {
-      setStatus("Lütfen * zorunlu alanları doldurun ve onay kutusunu işaretleyin.");
+      setStatus("Please fill in all required fields (*) and agree to the consent box.");
       return;
     }
     if (!validURL(rio) || !validURL(wcl)) {
-      setStatus("Lütfen geçerli bir Raider.IO / Warcraft Logs URL’si girin (veya boş bırakın).");
+      setStatus("Please provide valid URLs for Raider.IO / Warcraft Logs (or leave empty).");
       return;
     }
 
     submitBtn.disabled = true;
     submitBtn.style.opacity = .7;
-    setStatus("Gönderiliyor…");
+    setStatus("Submitting…");
 
-    const content = `**Yeni Guild Başvurusu** — ${character} @ ${realm}`;
+    const content = `**New Guild Application** — ${character} @ ${realm}`;
     const embed = {
       title: `${character} @ ${realm}`,
       description: notes || "—",
@@ -79,15 +73,12 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content, embeds: [embed] })
       });
-
       if (!res.ok) throw new Error(`Webhook HTTP ${res.status}`);
-      setStatus("Başvurun iletildi! Officer’lar en kısa sürede dönüş yapacak. ", true);
+      setStatus("Your application has been submitted! Officers will get back to you soon.", true);
       form.reset();
-      // İsteğe bağlı: basit bir “teşekkürler” anchor'ına kaydır
-      // location.hash = "#apply";
     } catch (err) {
       console.error(err);
-      setStatus("Gönderim başarısız oldu. Webhook URL’sini ve ağ bağlantını kontrol et.");
+      setStatus("Submission failed. Please check the webhook URL or your connection.");
     } finally {
       submitBtn.disabled = false;
       submitBtn.style.opacity = 1;
