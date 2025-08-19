@@ -200,12 +200,10 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 /* Hero CTA grubu */
 .hero-ctas {
   display: flex;
-  flex-direction: column;
-  gap: 14px;
-  align-items: center;
-}
-@media(min-width: 720px){
-  .hero-ctas { flex-direction: row; }
+  flex-direction: column;   /* her zaman alt alta */
+  align-items: center;      /* ortalı */
+  gap: 18px;                /* butonlar arası boşluk biraz daha ferah */
+  margin-top: 25px;
 }
 
 /* Press effect */
