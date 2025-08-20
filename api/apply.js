@@ -62,23 +62,23 @@ module.exports = async (req, res) => {
     // If no embeds provided, construct from legacy fields
     if (!embeds) {
       const {
-        character = "", realm = "", btag = "",
-        classes = [], roles = [],
-        rio = "", wcl = "", availability = "", notes = "",
-        consent = false,
-        website = "", // honeypot
-        meta = {}
-      } = body;
+  character='', realm='', btag='',
+  classes=[], roles=[],
+  rio='', wcl='', availability='', notes='',
+  consent=false, website='', meta={},
+  discord=''              // <-- EKLE
+} = body;
 
       // Honeypot: if filled, quietly OK
       if (website) { res.status(200).json({ ok: true }); return; }
 
       // Required fields (incl. RIO/WCL)
       const isUrl = (u) => { try { new URL(u); return true; } catch { return false; } };
-      if (!character || !realm || !btag || !availability || !rio || !wcl) {
-        res.status(400).json({ ok: false, error: "Missing required fields" });
-        return;
-      }
+     if (!character || !realm || !btag || !availability || !rio || !wcl || !discord) {
+  res.status(400).json({ ok: false, error: 'Missing required fields' });
+  return;
+}
+
       if (!isUrl(rio) || !isUrl(wcl)) {
         res.status(400).json({ ok: false, error: "Invalid URL" });
         return;
@@ -95,13 +95,15 @@ module.exports = async (req, res) => {
           description: notes || "—",
           color: 0xF39C12,
           fields: [
-            { name: "BattleTag",  value: btag,                                   inline: true  },
-            { name: "Class(es)",  value: classes.length ? classes.join(", ") : "—", inline: true  },
-            { name: "Roles",      value: roles.length   ? roles.join(", ")   : "—", inline: true  },
-            { name: "Availability", value: availability || "—",                 inline: false },
-            { name: "Raider.IO",    value: rio,                                  inline: false },
-            { name: "Warcraft Logs",value: wcl,                                  inline: false }
-          ],
+  { name: 'BattleTag', value: btag, inline: true },
+  { name: 'Classes', value: classes.length ? classes.join(', ') : '—', inline: true },
+  { name: 'Roles', value: roles.length ? roles.join(', ') : '—', inline: true },
+  { name: 'Availability', value: availability || '—', inline: false },
+  { name: 'Raider.IO', value: rio, inline: false },
+  { name: 'Warcraft Logs', value: wcl, inline: false },
+  { name: 'Discord', value: discord || '—', inline: false } // <-- burada
+],
+
           timestamp: new Date().toISOString(),
           footer: { text: "TWWMP Apply" }
         }
