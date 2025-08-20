@@ -163,14 +163,19 @@
         })
       });
 
+      // ⬇⬇⬇ HATA DETAYLARINI GÖSTEREN YENİ KISIM
+      let data = null;
+      try { data = await res.json(); } catch (_) {}
+
       if (!res.ok) {
-        // Hata mesajını göstermek için dene
-        let msg = `Proxy HTTP ${res.status}`;
-        try {
-          const j = await res.json();
-          if (j && j.error) msg = j.error;
-        } catch {}
-        throw new Error(msg);
+        const msg = data?.error
+          ? `Error: ${data.error}${Array.isArray(data.details) && data.details.length ? ` — ${data.details.join(", ")}` : ""}`
+          : `Submission failed (HTTP ${res.status}).`;
+        setStatus(msg);
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = 1; }
+        if (window.turnstile) window.turnstile.reset();
+        turnstileToken = "";
+        return;
       }
 
       setStatus("Application received. Redirecting…", true);
