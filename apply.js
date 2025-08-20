@@ -1,19 +1,20 @@
 /* apply.js — client (Tarayıcı)
-   - Zorunlu alan ve URL kontrolü (Discord alanı dahil)
-   - Cloudflare Turnstile token kontrolü
-   - Başarılı olursa /api/apply'a POST ve /thank-you yönlendirme
+   - Zorunlu alan ve URL kontrolü
+   - Cloudflare Turnstile token kontrolü (tamamlanmadan gönderme yok)
+   - Başarılı olursa /api/apply'a POST ve /thanks yönlendirme
 */
 (() => {
   const form = document.getElementById('applyForm');
   if (!form) return;
 
   const statusEl  = document.getElementById('applyStatus');
-  const submitBtn = document.getElementById('applySubmit') || form.querySelector('button[type="submit"]');
+  const submitBtn = document.getElementById('applySubmit');
   const capErrEl  = document.getElementById('captchaError');
 
+  // Turnstile token'ı burada tutacağız
   let turnstileToken = "";
 
-  // Turnstile callback'leri
+  // Turnstile callback'leri (HTML'de data-callback ile bağlı)
   window.onTurnstileSuccess = (token) => {
     turnstileToken = token || "";
     if (capErrEl) capErrEl.style.display = 'none';
@@ -43,25 +44,13 @@
     Array.from(form.querySelectorAll('input[name="role"]:checked')).map(x => x.value);
 
   const validURL = (v) => {
-    try { new URL(v); return /^https?:/i.test(v); } catch { return false; }
+    try { new URL(v); return true; } catch { return false; }
   };
-
-  // Discord girişi normalize et: mention/ID/username
-  function normalizeDiscordInput(raw) {
-    const s = (raw || '').trim();
-    const m1 = s.match(/<@!?(\d{15,25})>/);      // <@123> / <@!123>
-    if (m1) return { raw: s, id: m1[1], username: null };
-    const m2 = s.match(/^(\d{15,25})$/);         // 123…
-    if (m2) return { raw: s, id: m2[1], username: null };
-    if (s.startsWith('@')) return { raw: s, id: null, username: s.slice(1) }; // @name
-    return { raw: s, id: null, username: s || null };                          // düz yazı
-  }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (submitBtn && submitBtn.disabled) return;
 
-    // Honeypot
+    // Honeypot (varsa)
     if (form.website && form.website.value.trim() !== "") return;
 
     // Zorunlu alanlar
@@ -75,11 +64,9 @@
     const classes      = getClasses();
     const roles        = getRoles();
     const notes        = form.notes?.value.trim() || "";
-    const discordRaw   = form.discord?.value.trim() || "";
-    const discordNorm  = normalizeDiscordInput(discordRaw);
 
-    if (!character || !realm || !btag || !availability || !rio || !wcl || !discordRaw) {
-      setStatus("Please fill all required fields (Character, Realm, BattleTag, Availability, Raider.IO, Warcraft Logs, Discord).");
+    if (!character || !realm || !btag || !availability || !rio || !wcl) {
+      setStatus("Please fill all required fields (Character, Realm, BattleTag, Availability, Raider.IO, Warcraft Logs).");
       return;
     }
     if (!validURL(rio) || !validURL(wcl)) {
@@ -90,6 +77,8 @@
       setStatus("Please agree to share your answers with the officers on Discord.");
       return;
     }
+
+    // Turnstile zorunlu
     if (!turnstileToken) {
       if (capErrEl) capErrEl.style.display = 'inline';
       setStatus("Please complete the verification.");
@@ -97,25 +86,23 @@
     }
 
     // UI kilitle
-    if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = .7; }
+    submitBtn.disabled = true;
+    submitBtn.style.opacity = .7;
     setStatus("Submitting…");
 
+    // Discord'a gidecek payload
     const content = `**New Guild Application** — ${character} @ ${realm}`;
     const embed = {
       title: `${character} @ ${realm}`,
       description: notes || "—",
       color: 0xF39C12,
       fields: [
-        { name: "BattleTag",       value: btag, inline: true },
-        { name: "Class(es)",       value: (classes.length ? classes.join(", ") : "—"), inline: true },
-        { name: "Roles",           value: (roles.length ? roles.join(", ") : "—"), inline: true },
-        { name: "Availability",    value: availability || "—", inline: false },
-        { name: "Raider.IO",       value: rio, inline: false },
-        { name: "Warcraft Logs",   value: wcl, inline: false },
-        // Embed içindeki mention ping yapmaz; bot results’ta pingleyecek.
-        { name: "Discord",         value: discordNorm.id ? `<@${discordNorm.id}>`
-                                                         : (discordNorm.username ? `@${discordNorm.username}` : discordRaw),
-          inline: false }
+        { name: "BattleTag", value: btag, inline: true },
+        { name: "Class(es)", value: (classes.length ? classes.join(", ") : "—"), inline: true },
+        { name: "Roles", value: (roles.length ? roles.join(", ") : "—"), inline: true },
+        { name: "Availability", value: availability || "—", inline: false },
+        { name: "Raider.IO", value: rio, inline: false },
+        { name: "Warcraft Logs", value: wcl, inline: false }
       ],
       timestamp: new Date().toISOString(),
       footer: { text: "TWWMP Apply" }
@@ -127,55 +114,20 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           turnstileToken,
-          character, realm, btag,
-          classes, roles,
-          rio, wcl, availability, notes,
-          consent,
-          discord: discordRaw,
-          discord_id_guess: discordNorm.id || null,
-          discord_username_guess: discordNorm.username || null,
           content,
-          embeds: [embed],
-          meta: { ts: new Date().toISOString() }
+          embeds: [embed]
         })
       });
-
-      // --- Detaylı hata gösterimi ---
-      const ct = res.headers.get("content-type") || "";
-      let payloadText = "";
-      let payloadJson = null;
-      try {
-        if (ct.includes("application/json")) {
-          payloadJson = await res.json();
-          payloadText = JSON.stringify(payloadJson);
-        } else {
-          payloadText = await res.text();
-        }
-      } catch {
-        // parse edilmeyen gövde
-      }
-
-      if (!res.ok) {
-        const msgFromJson = payloadJson?.error || payloadJson?.message || "";
-        const extra = Array.isArray(payloadJson?.details) && payloadJson.details.length
-          ? ` — ${payloadJson.details.join(", ")}`
-          : (!msgFromJson && payloadText ? ` — ${payloadText.slice(0, 300)}` : "");
-        setStatus(`Submission failed (HTTP ${res.status})${msgFromJson ? `: ${msgFromJson}` : ""}${extra}`);
-        // Konsola ham yanıtı dökelim:
-        console.error("Apply API error:", { status: res.status, headers: Object.fromEntries(res.headers), body: payloadText });
-        if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = 1; }
-        if (window.turnstile) window.turnstile.reset();
-        turnstileToken = "";
-        return;
-      }
+      if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`);
 
       setStatus("Application received. Redirecting…", true);
       window.location.href = "/thank-you";
     } catch (err) {
-      // gerçek network hatası / CORS / DNS vs.
-      console.error("Apply fetch failed:", err);
-      setStatus(`Network error: ${err?.message || err}`);
-      if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = 1; }
+      console.error(err);
+      setStatus("Submission failed. Please try again later.");
+      submitBtn.disabled = false;
+      submitBtn.style.opacity = 1;
+      // Tokeni sıfırla ki yeniden çözebilsin
       if (window.turnstile) window.turnstile.reset();
       turnstileToken = "";
     }
