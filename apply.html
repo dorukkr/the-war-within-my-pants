@@ -1,4 +1,4 @@
-<!-- apply.html (final with Cloudflare Turnstile) -->
+<!-- apply.html (patched) -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -72,11 +72,11 @@
             </div>
             
             <div class="field">
-  <label for="discord">Discord <span class="req">*</span></label>
-  <input id="discord" name="discord" required
-         placeholder="@mention or username e.g. @toxarica or toxarica" />
-  <small class="hint">Type your Discord @mention or username (helps us auto-find you).</small>
-</div>
+              <label for="discord">Discord <span class="req">*</span></label>
+              <input id="discord" name="discord" required
+                     placeholder="@mention or username e.g. @toxarica or toxarica" />
+              <small class="hint">Type your Discord @mention or username (helps us auto-find you).</small>
+            </div>
             
             <div class="field">
               <label for="class">Class <span class="req">*</span></label>
@@ -228,6 +228,7 @@
       const wcl          = document.getElementById("wcl");
       const availability = document.getElementById("availability");
       const consent      = document.getElementById("consent");
+      const discord      = document.getElementById("discord");  // NEW
 
       if (!character.value.trim())    { valid=false; showError(character,"This field is required."); }
       if (!realm.value.trim())        { valid=false; showError(realm,"This field is required."); }
@@ -239,6 +240,9 @@
 
       if (!wcl.value.trim())          { valid=false; showError(wcl,"This field is required."); }
       else if (!isValidUrl(wcl.value)){ valid=false; showError(wcl,"Please enter a valid URL."); }
+
+      // Discord zorunlu
+      if (!discord.value.trim())      { valid=false; showError(discord,"This field is required."); }
 
       if (form.querySelectorAll("input[name='role']:checked").length === 0){
         valid=false; showError(form.querySelector(".chips"), "Please select at least one role.");
@@ -258,6 +262,7 @@
       const classes = Array.from(document.querySelectorAll("#class option:checked")).map(o=>o.value);
       const roles   = Array.from(document.querySelectorAll("input[name='role']:checked")).map(x=>x.value);
       const notes   = (document.getElementById("notes")?.value || "").trim();
+      const discordVal = discord.value.trim(); // NEW
 
       // UI kilitle
       submitBtn.disabled = true;
@@ -271,12 +276,13 @@
         description: notes || "—",
         color: 0xF39C12,
         fields: [
-          { name: "BattleTag", value: btag.value.trim(), inline: true },
-          { name: "Class(es)", value: (classes.length ? classes.join(", ") : "—"), inline: true },
-          { name: "Roles", value: (roles.length ? roles.join(", ") : "—"), inline: true },
-          { name: "Availability", value: availability.value.trim() || "—", inline: false },
-          { name: "Raider.IO", value: rio.value.trim(), inline: false },
-          { name: "Warcraft Logs", value: wcl.value.trim(), inline: false }
+          { name: "BattleTag",  value: btag.value.trim(),                         inline: true },
+          { name: "Discord",    value: (discordVal || "—"),                       inline: true },  /* NEW */
+          { name: "Class(es)",  value: (classes.length ? classes.join(", ") : "—"), inline: true },
+          { name: "Roles",      value: (roles.length ? roles.join(", ") : "—"),   inline: true },
+          { name: "Availability", value: availability.value.trim() || "—",        inline: false },
+          { name: "Raider.IO",  value: rio.value.trim(),                          inline: false },
+          { name: "Warcraft Logs", value: wcl.value.trim(),                       inline: false }
         ],
         timestamp: new Date().toISOString(),
         footer: { text: "TWWMP Apply" }
@@ -286,7 +292,13 @@
         const resp = await fetch("/api/apply", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ turnstileToken, content, embeds:[embed] })
+          body: JSON.stringify({
+            turnstileToken,
+            content,
+            embeds:[embed],
+            // legacy fallback için ayrıca gönder
+            discord: discordVal
+          })
         });
         if (!resp.ok) throw new Error("Proxy failed: " + resp.status);
         setStatus("Application received. Redirecting…", true);
