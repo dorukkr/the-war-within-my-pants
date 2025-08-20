@@ -8,14 +8,12 @@
   if (!form) return;
 
   const statusEl  = document.getElementById('applyStatus');
-  // submit butonu: önce id ile dene, yoksa formdaki submit butonunu bul
   const submitBtn = document.getElementById('applySubmit') || form.querySelector('button[type="submit"]');
   const capErrEl  = document.getElementById('captchaError');
 
-  // Turnstile token'ı burada tutacağız
   let turnstileToken = "";
 
-  // Turnstile callback'leri (HTML'de data-callback ile bağlı)
+  // Turnstile callback'leri
   window.onTurnstileSuccess = (token) => {
     turnstileToken = token || "";
     if (capErrEl) capErrEl.style.display = 'none';
@@ -51,28 +49,19 @@
   // Discord girişi normalize et: mention/ID/username
   function normalizeDiscordInput(raw) {
     const s = (raw || '').trim();
-
-    // <@123>, <@!123> -> ID
-    const m1 = s.match(/<@!?(\d{15,25})>/);
+    const m1 = s.match(/<@!?(\d{15,25})>/);      // <@123> / <@!123>
     if (m1) return { raw: s, id: m1[1], username: null };
-
-    // Sadece rakam (ID gibi)
-    const m2 = s.match(/^(\d{15,25})$/);
+    const m2 = s.match(/^(\d{15,25})$/);         // 123…
     if (m2) return { raw: s, id: m2[1], username: null };
-
-    // @username -> username
-    if (s.startsWith('@')) return { raw: s, id: null, username: s.slice(1) };
-
-    // düz yazılan username
-    return { raw: s, id: null, username: s || null };
+    if (s.startsWith('@')) return { raw: s, id: null, username: s.slice(1) }; // @name
+    return { raw: s, id: null, username: s || null };                          // düz yazı
   }
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (submitBtn && submitBtn.disabled) return;
 
-    if (submitBtn && submitBtn.disabled) return; // çifte tıklamayı engelle
-
-    // Honeypot (varsa)
+    // Honeypot
     if (form.website && form.website.value.trim() !== "") return;
 
     // Zorunlu alanlar
@@ -101,8 +90,6 @@
       setStatus("Please agree to share your answers with the officers on Discord.");
       return;
     }
-
-    // Turnstile zorunlu
     if (!turnstileToken) {
       if (capErrEl) capErrEl.style.display = 'inline';
       setStatus("Please complete the verification.");
@@ -110,28 +97,24 @@
     }
 
     // UI kilitle
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.style.opacity = .7;
-    }
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = .7; }
     setStatus("Submitting…");
 
-    // Discord'a gidecek embed (server proxy’si direkt forward ediyorsa)
     const content = `**New Guild Application** — ${character} @ ${realm}`;
     const embed = {
       title: `${character} @ ${realm}`,
       description: notes || "—",
       color: 0xF39C12,
       fields: [
-        { name: "BattleTag",     value: btag, inline: true },
-        { name: "Class(es)",     value: (classes.length ? classes.join(", ") : "—"), inline: true },
-        { name: "Roles",         value: (roles.length ? roles.join(", ") : "—"), inline: true },
-        { name: "Availability",  value: availability || "—", inline: false },
-        { name: "Raider.IO",     value: rio, inline: false },
-        { name: "Warcraft Logs", value: wcl, inline: false },
-        // Embed içindeki mention PİNG YAPMAZ. Bot bunu okuyup results kanalında pingleyecek.
-        { name: "Discord",       value: discordNorm.id ? `<@${discordNorm.id}>`
-                                                       : (discordNorm.username ? `@${discordNorm.username}` : discordRaw),
+        { name: "BattleTag",       value: btag, inline: true },
+        { name: "Class(es)",       value: (classes.length ? classes.join(", ") : "—"), inline: true },
+        { name: "Roles",           value: (roles.length ? roles.join(", ") : "—"), inline: true },
+        { name: "Availability",    value: availability || "—", inline: false },
+        { name: "Raider.IO",       value: rio, inline: false },
+        { name: "Warcraft Logs",   value: wcl, inline: false },
+        // Embed içindeki mention ping yapmaz; bot results’ta pingleyecek.
+        { name: "Discord",         value: discordNorm.id ? `<@${discordNorm.id}>`
+                                                         : (discordNorm.username ? `@${discordNorm.username}` : discordRaw),
           inline: false }
       ],
       timestamp: new Date().toISOString(),
@@ -143,10 +126,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          // Cloudflare Turnstile
           turnstileToken,
-
-          // Raw alanlar (backend/bot için)
           character, realm, btag,
           classes, roles,
           rio, wcl, availability, notes,
@@ -154,24 +134,35 @@
           discord: discordRaw,
           discord_id_guess: discordNorm.id || null,
           discord_username_guess: discordNorm.username || null,
-
-          // Webhook forward
           content,
           embeds: [embed],
-
           meta: { ts: new Date().toISOString() }
         })
       });
 
-      // ⬇⬇⬇ HATA DETAYLARINI GÖSTEREN YENİ KISIM
-      let data = null;
-      try { data = await res.json(); } catch (_) {}
+      // --- Detaylı hata gösterimi ---
+      const ct = res.headers.get("content-type") || "";
+      let payloadText = "";
+      let payloadJson = null;
+      try {
+        if (ct.includes("application/json")) {
+          payloadJson = await res.json();
+          payloadText = JSON.stringify(payloadJson);
+        } else {
+          payloadText = await res.text();
+        }
+      } catch {
+        // parse edilmeyen gövde
+      }
 
       if (!res.ok) {
-        const msg = data?.error
-          ? `Error: ${data.error}${Array.isArray(data.details) && data.details.length ? ` — ${data.details.join(", ")}` : ""}`
-          : `Submission failed (HTTP ${res.status}).`;
-        setStatus(msg);
+        const msgFromJson = payloadJson?.error || payloadJson?.message || "";
+        const extra = Array.isArray(payloadJson?.details) && payloadJson.details.length
+          ? ` — ${payloadJson.details.join(", ")}`
+          : (!msgFromJson && payloadText ? ` — ${payloadText.slice(0, 300)}` : "");
+        setStatus(`Submission failed (HTTP ${res.status})${msgFromJson ? `: ${msgFromJson}` : ""}${extra}`);
+        // Konsola ham yanıtı dökelim:
+        console.error("Apply API error:", { status: res.status, headers: Object.fromEntries(res.headers), body: payloadText });
         if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = 1; }
         if (window.turnstile) window.turnstile.reset();
         turnstileToken = "";
@@ -181,13 +172,10 @@
       setStatus("Application received. Redirecting…", true);
       window.location.href = "/thank-you";
     } catch (err) {
-      console.error(err);
-      setStatus("Submission failed. Please try again later.");
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = 1;
-      }
-      // Tokeni sıfırla ki yeniden çözebilsin
+      // gerçek network hatası / CORS / DNS vs.
+      console.error("Apply fetch failed:", err);
+      setStatus(`Network error: ${err?.message || err}`);
+      if (submitBtn) { submitBtn.disabled = false; submitBtn.style.opacity = 1; }
       if (window.turnstile) window.turnstile.reset();
       turnstileToken = "";
     }
