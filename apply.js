@@ -1,7 +1,7 @@
 /* apply.js — client (Tarayıcı)
-   - Zorunlu alan ve URL kontrolü
-   - Cloudflare Turnstile token kontrolü (tamamlanmadan gönderme yok)
-   - Başarılı olursa /api/apply'a POST ve /thanks yönlendirme
+   - Zorunlu alan ve URL kontrolü (Discord alanı dahil)
+   - Cloudflare Turnstile token kontrolü
+   - Başarılı olursa /api/apply'a POST ve /thank-you yönlendirme
 */
 (() => {
   const form = document.getElementById('applyForm');
@@ -47,8 +47,29 @@
     try { new URL(v); return true; } catch { return false; }
   };
 
+  // Discord girişi normalize et: mention/ID/username
+  function normalizeDiscordInput(raw) {
+    const s = (raw || '').trim();
+
+    // <@123>, <@!123> -> ID
+    const m1 = s.match(/<@!?(\d{15,25})>/);
+    if (m1) return { raw: s, id: m1[1], username: null };
+
+    // Sadece rakam (ID gibi)
+    const m2 = s.match(/^(\d{15,25})$/);
+    if (m2) return { raw: s, id: m2[1], username: null };
+
+    // @username -> username
+    if (s.startsWith('@')) return { raw: s, id: null, username: s.slice(1) };
+
+    // düz yazılan username
+    return { raw: s, id: null, username: s || null };
+  }
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    if (submitBtn?.disabled) return; // çifte tıklamayı engelle
 
     // Honeypot (varsa)
     if (form.website && form.website.value.trim() !== "") return;
@@ -64,9 +85,11 @@
     const classes      = getClasses();
     const roles        = getRoles();
     const notes        = form.notes?.value.trim() || "";
+    const discordRaw   = form.discord?.value.trim() || "";
+    const discordNorm  = normalizeDiscordInput(discordRaw);
 
-    if (!character || !realm || !btag || !availability || !rio || !wcl) {
-      setStatus("Please fill all required fields (Character, Realm, BattleTag, Availability, Raider.IO, Warcraft Logs).");
+    if (!character || !realm || !btag || !availability || !rio || !wcl || !discordRaw) {
+      setStatus("Please fill all required fields (Character, Realm, BattleTag, Availability, Raider.IO, Warcraft Logs, Discord).");
       return;
     }
     if (!validURL(rio) || !validURL(wcl)) {
@@ -90,19 +113,20 @@
     submitBtn.style.opacity = .7;
     setStatus("Submitting…");
 
-    // Discord'a gidecek payload
+    // Discord'a gidecek embed (server proxy’si direkt forward ediyorsa)
     const content = `**New Guild Application** — ${character} @ ${realm}`;
     const embed = {
       title: `${character} @ ${realm}`,
       description: notes || "—",
       color: 0xF39C12,
       fields: [
-        { name: "BattleTag", value: btag, inline: true },
-        { name: "Class(es)", value: (classes.length ? classes.join(", ") : "—"), inline: true },
-        { name: "Roles", value: (roles.length ? roles.join(", ") : "—"), inline: true },
-        { name: "Availability", value: availability || "—", inline: false },
-        { name: "Raider.IO", value: rio, inline: false },
-        { name: "Warcraft Logs", value: wcl, inline: false }
+        { name: "BattleTag",   value: btag, inline: true },
+        { name: "Class(es)",   value: (classes.length ? classes.join(", ") : "—"), inline: true },
+        { name: "Roles",       value: (roles.length ? roles.join(", ") : "—"), inline: true },
+        { name: "Availability",value: availability || "—", inline: false },
+        { name: "Raider.IO",   value: rio, inline: false },
+        { name: "Warcraft Logs", value: wcl, inline: false },
+        { name: "Discord",     value: discordNorm.id ? `<@${discordNorm.id}>` : (discordNorm.username ? `@${discordNorm.username}` : discordRaw), inline: false }
       ],
       timestamp: new Date().toISOString(),
       footer: { text: "TWWMP Apply" }
@@ -113,9 +137,23 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          // Cloudflare Turnstile
           turnstileToken,
+
+          // Raw alanları da gönder (backend doğrulama / bot için işimize yarar)
+          character, realm, btag,
+          classes, roles,
+          rio, wcl, availability, notes,
+          consent,
+          discord: discordRaw,
+          discord_id_guess: discordNorm.id || null,
+          discord_username_guess: discordNorm.username || null,
+
+          // Webhook forward kullanıyorsan bunlar da kalsın:
           content,
-          embeds: [embed]
+          embeds: [embed],
+
+          meta: { ts: new Date().toISOString() }
         })
       });
       if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`);
