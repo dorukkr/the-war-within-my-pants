@@ -96,6 +96,7 @@ module.exports = async (req, res) => {
           color: 0xF39C12,
           fields: [
             { name: "BattleTag",  value: btag,                                   inline: true  },
+            { name: "Discord",    value: body.discord || "—",                    inline: true  }, // 👈 YENİ EKLENDİ
             { name: "Class(es)",  value: classes.length ? classes.join(", ") : "—", inline: true  },
             { name: "Roles",      value: roles.length   ? roles.join(", ")   : "—", inline: true  },
             { name: "Availability", value: availability || "—",                 inline: false },
