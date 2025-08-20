@@ -1,5 +1,5 @@
 // /api/apply.js — Vercel Serverless (CommonJS)
-// - Cloudflare Turnstile verification
+// - Cloudflare Turnstile verification (timeout’lu)
 // - Discord Webhook send
 // - Supports both new (content+embeds) and legacy field payloads
 // - Mentions officers role via OFFICERS_ROLE_ID env
@@ -20,7 +20,12 @@ module.exports = async (req, res) => {
       return;
     }
 
-    const body = req.body || {};
+    // Body güvenli parse
+    let bodyRaw = req.body;
+    if (typeof bodyRaw === "string") {
+      try { bodyRaw = JSON.parse(bodyRaw); } catch {}
+    }
+    const body = bodyRaw || {};
 
     // 1) Turnstile token (client: apply.html -> turnstileToken)
     const turnstileToken =
@@ -35,22 +40,34 @@ module.exports = async (req, res) => {
     // Optional: client IP for verification
     const ip = (req.headers["x-forwarded-for"] || "").split(",")[0].trim();
 
-    // 2) Verify Turnstile
-    const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({
-        secret: CF_SECRET,
-        response: String(turnstileToken),
-        ...(ip ? { remoteip: ip } : {})
-      })
-    });
-    const verify = await verifyRes.json();
-    if (!verify.success) {
+    // 2) Verify Turnstile (timeout’lu)
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 6000);
+    let verify;
+    try {
+      const verifyRes = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          secret: CF_SECRET,
+          response: String(turnstileToken),
+          ...(ip ? { remoteip: ip } : {})
+        }),
+        signal: ctrl.signal
+      });
+      clearTimeout(t);
+      verify = await verifyRes.json();
+    } catch (e) {
+      clearTimeout(t);
+      res.status(502).json({ ok: false, error: "Turnstile verification network error" });
+      return;
+    }
+
+    if (!verify || !verify.success) {
       res.status(400).json({
         ok: false,
         error: "Turnstile verification failed",
-        details: verify["error-codes"] || []
+        details: (verify && verify["error-codes"]) || []
       });
       return;
     }
@@ -59,26 +76,33 @@ module.exports = async (req, res) => {
     let content = body.content;
     let embeds  = body.embeds;
 
-    // If no embeds provided, construct from legacy fields
+    // Eğer client content+embeds gönderiyorsa, minimum bir kontrol daha yapalım:
+    if (embeds && Array.isArray(embeds) && embeds[0] && Array.isArray(embeds[0].fields)) {
+      const dcField = embeds[0].fields.find(f => (f.name || "").toLowerCase() === "discord");
+      if (!dcField || !String(dcField.value || "").trim()) {
+        return res.status(400).json({ ok: false, error: "Discord handle is required" });
+      }
+    }
+
+    // Legacy payload'tan embed üret
     if (!embeds) {
       const {
-  character='', realm='', btag='',
-  classes=[], roles=[],
-  rio='', wcl='', availability='', notes='',
-  consent=false, website='', meta={},
-  discord=''              // <-- EKLE
-} = body;
+        character = '', realm = '', btag = '',
+        classes = [], roles = [],
+        rio = '', wcl = '', availability = '', notes = '',
+        consent = false, website = '', meta = {},
+        discord = '' // <-- legacy body için zorunlu
+      } = body;
 
-      // Honeypot: if filled, quietly OK
+      // Honeypot: doldurulduysa sessizce OK
       if (website) { res.status(200).json({ ok: true }); return; }
 
-      // Required fields (incl. RIO/WCL)
+      // Zorunlu alanlar
       const isUrl = (u) => { try { new URL(u); return true; } catch { return false; } };
-     if (!character || !realm || !btag || !availability || !rio || !wcl || !discord) {
-  res.status(400).json({ ok: false, error: 'Missing required fields' });
-  return;
-}
-
+      if (!character || !realm || !btag || !availability || !rio || !wcl || !discord) {
+        res.status(400).json({ ok: false, error: "Missing required fields" });
+        return;
+      }
       if (!isUrl(rio) || !isUrl(wcl)) {
         res.status(400).json({ ok: false, error: "Invalid URL" });
         return;
@@ -95,26 +119,25 @@ module.exports = async (req, res) => {
           description: notes || "—",
           color: 0xF39C12,
           fields: [
-  { name: 'BattleTag', value: btag, inline: true },
-  { name: 'Classes', value: classes.length ? classes.join(', ') : '—', inline: true },
-  { name: 'Roles', value: roles.length ? roles.join(', ') : '—', inline: true },
-  { name: 'Availability', value: availability || '—', inline: false },
-  { name: 'Raider.IO', value: rio, inline: false },
-  { name: 'Warcraft Logs', value: wcl, inline: false },
-  { name: 'Discord', value: discord || '—', inline: false } // <-- burada
-],
-
+            { name: "BattleTag", value: btag, inline: true },
+            { name: "Classes", value: classes.length ? classes.join(", ") : "—", inline: true },
+            { name: "Roles", value: roles.length ? roles.join(", ") : "—", inline: true },
+            { name: "Availability", value: availability || "—", inline: false },
+            { name: "Raider.IO", value: rio, inline: false },
+            { name: "Warcraft Logs", value: wcl, inline: false },
+            { name: "Discord", value: discord || "—", inline: false }
+          ],
           timestamp: new Date().toISOString(),
           footer: { text: "TWWMP Apply" }
         }
       ];
     }
 
-    // 4) Role mention + allowed_mentions to restrict pings
+    // 4) Role mention + allowed_mentions
     const messagePayload = {
       content: `${ROLE_ID ? `<@&${ROLE_ID}> ` : ""}${content || "New application"}`,
       embeds: Array.isArray(embeds) ? embeds : [],
-      allowed_mentions: ROLE_ID ? { parse: [], roles: [ROLE_ID] } : { parse: [] }
+      allowed_mentions: ROLE_ID ? { parse: [], roles: [String(ROLE_ID)] } : { parse: [] }
     };
 
     // 5) Send to Discord
