@@ -1,7 +1,8 @@
 /* apply.js — client (Tarayıcı)
    - Zorunlu alan ve URL kontrolü
    - Cloudflare Turnstile token kontrolü (tamamlanmadan gönderme yok)
-   - Başarılı olursa /api/apply'a POST ve /thanks yönlendirme
+   - Başarılı olursa /api/apply'a POST ve /thank-you yönlendirme
+   - YENİ: Discord handle'ını (@name) embed field + ApplicantHandle etiketi olarak ekler
 */
 (() => {
   const form = document.getElementById('applyForm');
@@ -47,6 +48,16 @@
     try { new URL(v); return true; } catch { return false; }
   };
 
+  // Discord handle normalize (@ koy, boşlukları düzelt)
+  const normalizeHandle = (raw) => {
+    if (!raw) return "";
+    let h = String(raw).trim().replace(/\s+/g, " ");
+    // Çifte @@ gibi durumları tek @ yap
+    h = h.replace(/^@+/, "@").replace(/\s*@+\s*/g, "@");
+    if (!h.startsWith("@")) h = "@" + h;
+    return h;
+  };
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -64,6 +75,9 @@
     const classes      = getClasses();
     const roles        = getRoles();
     const notes        = form.notes?.value.trim() || "";
+    // Discord (zorunlu yapmak istersen koşula ekleyebilirsin)
+    const discordRaw   = form.discord?.value ?? "";
+    const discordHandle = normalizeHandle(discordRaw);
 
     if (!character || !realm || !btag || !availability || !rio || !wcl) {
       setStatus("Please fill all required fields (Character, Realm, BattleTag, Availability, Raider.IO, Warcraft Logs).");
@@ -92,15 +106,21 @@
 
     // Discord'a gidecek payload
     const content = `**New Guild Application** — ${character} @ ${realm}`;
+
+    // Bot'un kolay parse etmesi için tek satırlık etiket
+    const handleTag = discordHandle ? `\nApplicantHandle:${discordHandle}` : "";
+
     const embed = {
       title: `${character} @ ${realm}`,
-      description: notes || "—",
+      description: (notes || "—") + handleTag,
       color: 0xF39C12,
       fields: [
         { name: "BattleTag", value: btag, inline: true },
         { name: "Class(es)", value: (classes.length ? classes.join(", ") : "—"), inline: true },
         { name: "Roles", value: (roles.length ? roles.join(", ") : "—"), inline: true },
         { name: "Availability", value: availability || "—", inline: false },
+        // YENİ: Discord alanını ayrı bir field olarak da gönder
+        { name: "Discord", value: (discordHandle || "—"), inline: false },
         { name: "Raider.IO", value: rio, inline: false },
         { name: "Warcraft Logs", value: wcl, inline: false }
       ],
