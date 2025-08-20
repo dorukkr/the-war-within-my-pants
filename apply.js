@@ -1,8 +1,9 @@
 /* apply.js — client (Tarayıcı)
    - Zorunlu alan ve URL kontrolü
-   - Cloudflare Turnstile token kontrolü (tamamlanmadan gönderme yok)
+   - Cloudflare Turnstile token kontrolü
    - Başarılı olursa /api/apply'a POST ve /thank-you yönlendirme
-   - YENİ: Discord handle'ını (@name) embed field + ApplicantHandle etiketi olarak ekler
+   - Discord handle'ını (@name) embed field + ApplicantHandle etiketi olarak ekler
+   - Legacy fallback için body.discord da gönderilir
 */
 (() => {
   const form = document.getElementById('applyForm');
@@ -12,10 +13,9 @@
   const submitBtn = document.getElementById('applySubmit');
   const capErrEl  = document.getElementById('captchaError');
 
-  // Turnstile token'ı burada tutacağız
   let turnstileToken = "";
 
-  // Turnstile callback'leri (HTML'de data-callback ile bağlı)
+  // Turnstile callbacks
   window.onTurnstileSuccess = (token) => {
     turnstileToken = token || "";
     if (capErrEl) capErrEl.style.display = 'none';
@@ -52,7 +52,6 @@
   const normalizeHandle = (raw) => {
     if (!raw) return "";
     let h = String(raw).trim().replace(/\s+/g, " ");
-    // Çifte @@ gibi durumları tek @ yap
     h = h.replace(/^@+/, "@").replace(/\s*@+\s*/g, "@");
     if (!h.startsWith("@")) h = "@" + h;
     return h;
@@ -75,7 +74,8 @@
     const classes      = getClasses();
     const roles        = getRoles();
     const notes        = form.notes?.value.trim() || "";
-    // Discord (zorunlu yapmak istersen koşula ekleyebilirsin)
+
+    // Discord (zorunlu yapmıyoruz; varsa alıyoruz)
     const discordRaw   = form.discord?.value ?? "";
     const discordHandle = normalizeHandle(discordRaw);
 
@@ -92,7 +92,6 @@
       return;
     }
 
-    // Turnstile zorunlu
     if (!turnstileToken) {
       if (capErrEl) capErrEl.style.display = 'inline';
       setStatus("Please complete the verification.");
@@ -104,10 +103,7 @@
     submitBtn.style.opacity = .7;
     setStatus("Submitting…");
 
-    // Discord'a gidecek payload
     const content = `**New Guild Application** — ${character} @ ${realm}`;
-
-    // Bot'un kolay parse etmesi için tek satırlık etiket
     const handleTag = discordHandle ? `\nApplicantHandle:${discordHandle}` : "";
 
     const embed = {
@@ -116,11 +112,10 @@
       color: 0xF39C12,
       fields: [
         { name: "BattleTag", value: btag, inline: true },
+        { name: "Discord",   value: (discordHandle || "—"), inline: true },
         { name: "Class(es)", value: (classes.length ? classes.join(", ") : "—"), inline: true },
-        { name: "Roles", value: (roles.length ? roles.join(", ") : "—"), inline: true },
+        { name: "Roles",     value: (roles.length ? roles.join(", ") : "—"), inline: true },
         { name: "Availability", value: availability || "—", inline: false },
-        // YENİ: Discord alanını ayrı bir field olarak da gönder
-        { name: "Discord", value: (discordHandle || "—"), inline: false },
         { name: "Raider.IO", value: rio, inline: false },
         { name: "Warcraft Logs", value: wcl, inline: false }
       ],
@@ -133,11 +128,21 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          // Turnstile
           turnstileToken,
+          // Modern payload
           content,
-          embeds: [embed]
+          embeds: [embed],
+          // Legacy fallback (serverless embeds oluşturmaya dönerse)
+          character, realm, btag,
+          classes, roles,
+          rio, wcl, availability, notes,
+          consent,
+          discord: discordHandle, // ← legacy için ayrıca gönder
+          meta: { ts: new Date().toISOString() }
         })
       });
+
       if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`);
 
       setStatus("Application received. Redirecting…", true);
