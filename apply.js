@@ -8,7 +8,8 @@
   if (!form) return;
 
   const statusEl  = document.getElementById('applyStatus');
-  const submitBtn = document.getElementById('applySubmit');
+  // submit butonu: önce id ile dene, yoksa formdaki submit butonunu bul
+  const submitBtn = document.getElementById('applySubmit') || form.querySelector('button[type="submit"]');
   const capErrEl  = document.getElementById('captchaError');
 
   // Turnstile token'ı burada tutacağız
@@ -44,7 +45,7 @@
     Array.from(form.querySelectorAll('input[name="role"]:checked')).map(x => x.value);
 
   const validURL = (v) => {
-    try { new URL(v); return true; } catch { return false; }
+    try { new URL(v); return /^https?:/i.test(v); } catch { return false; }
   };
 
   // Discord girişi normalize et: mention/ID/username
@@ -69,7 +70,7 @@
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    if (submitBtn?.disabled) return; // çifte tıklamayı engelle
+    if (submitBtn && submitBtn.disabled) return; // çifte tıklamayı engelle
 
     // Honeypot (varsa)
     if (form.website && form.website.value.trim() !== "") return;
@@ -109,8 +110,10 @@
     }
 
     // UI kilitle
-    submitBtn.disabled = true;
-    submitBtn.style.opacity = .7;
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.style.opacity = .7;
+    }
     setStatus("Submitting…");
 
     // Discord'a gidecek embed (server proxy’si direkt forward ediyorsa)
@@ -163,8 +166,10 @@
     } catch (err) {
       console.error(err);
       setStatus("Submission failed. Please try again later.");
-      submitBtn.disabled = false;
-      submitBtn.style.opacity = 1;
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = 1;
+      }
       // Tokeni sıfırla ki yeniden çözebilsin
       if (window.turnstile) window.turnstile.reset();
       turnstileToken = "";
