@@ -123,13 +123,16 @@
       description: notes || "—",
       color: 0xF39C12,
       fields: [
-        { name: "BattleTag",   value: btag, inline: true },
-        { name: "Class(es)",   value: (classes.length ? classes.join(", ") : "—"), inline: true },
-        { name: "Roles",       value: (roles.length ? roles.join(", ") : "—"), inline: true },
-        { name: "Availability",value: availability || "—", inline: false },
-        { name: "Raider.IO",   value: rio, inline: false },
+        { name: "BattleTag",     value: btag, inline: true },
+        { name: "Class(es)",     value: (classes.length ? classes.join(", ") : "—"), inline: true },
+        { name: "Roles",         value: (roles.length ? roles.join(", ") : "—"), inline: true },
+        { name: "Availability",  value: availability || "—", inline: false },
+        { name: "Raider.IO",     value: rio, inline: false },
         { name: "Warcraft Logs", value: wcl, inline: false },
-        { name: "Discord",     value: discordNorm.id ? `<@${discordNorm.id}>` : (discordNorm.username ? `@${discordNorm.username}` : discordRaw), inline: false }
+        // Embed içindeki mention PİNG YAPMAZ. Bot bunu okuyup results kanalında pingleyecek.
+        { name: "Discord",       value: discordNorm.id ? `<@${discordNorm.id}>`
+                                                       : (discordNorm.username ? `@${discordNorm.username}` : discordRaw),
+          inline: false }
       ],
       timestamp: new Date().toISOString(),
       footer: { text: "TWWMP Apply" }
@@ -143,7 +146,7 @@
           // Cloudflare Turnstile
           turnstileToken,
 
-          // Raw alanları da gönder (backend doğrulama / bot için işimize yarar)
+          // Raw alanlar (backend/bot için)
           character, realm, btag,
           classes, roles,
           rio, wcl, availability, notes,
@@ -152,14 +155,23 @@
           discord_id_guess: discordNorm.id || null,
           discord_username_guess: discordNorm.username || null,
 
-          // Webhook forward kullanıyorsan bunlar da kalsın:
+          // Webhook forward
           content,
           embeds: [embed],
 
           meta: { ts: new Date().toISOString() }
         })
       });
-      if (!res.ok) throw new Error(`Proxy HTTP ${res.status}`);
+
+      if (!res.ok) {
+        // Hata mesajını göstermek için dene
+        let msg = `Proxy HTTP ${res.status}`;
+        try {
+          const j = await res.json();
+          if (j && j.error) msg = j.error;
+        } catch {}
+        throw new Error(msg);
+      }
 
       setStatus("Application received. Redirecting…", true);
       window.location.href = "/thank-you";
