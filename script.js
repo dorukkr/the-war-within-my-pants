@@ -261,3 +261,30 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
   window.addEventListener("popstate", routeToSectionFromPath);
 })();
 
+
+/* =========================================================
+   Progress Bar Animation (Viewport trigger)
+========================================================= */
+(() => {
+  if (prefersReduced) return; // reduced motion: animasyon yok
+  
+  const bars = document.querySelectorAll('.progress-bar');
+  if (!bars.length) return;
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const bar = entry.target;
+        const progress = bar.dataset.progress || 0;
+        // Viewport'a girince animasyon tetikle
+        setTimeout(() => {
+          bar.style.width = progress + '%';
+        }, 100);
+        io.unobserve(bar); // bir kez tetiklendi, yeter
+      }
+    });
+  }, { threshold: 0.3 });
+
+  bars.forEach(bar => io.observe(bar));
+})();
+
