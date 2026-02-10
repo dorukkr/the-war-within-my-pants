@@ -293,7 +293,7 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
   height: 28px;
   background: rgba(0, 0, 0, 0.6);
   border-radius: 14px;
-  overflow: hidden;
+  overflow: visible;
   border: 1px solid rgba(255, 255, 255, 0.1);
   margin-top: 10px;
 }
