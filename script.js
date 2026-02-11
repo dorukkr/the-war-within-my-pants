@@ -663,10 +663,13 @@ return {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else {
-    init();
+        init();
   }
+})();
+
 /* =========================================================
    Raid Schedule - Discord Event Display
+
 ========================================================= */
 (() => {
   const card = document.getElementById('raidScheduleCard');
