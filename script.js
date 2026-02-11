@@ -415,28 +415,17 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
     }
   }
 
-   // En aktif/son raid'i bul (en yüksek progress'li)
+   
+// Son eklenen raid'i bul (Object.keys'deki son eleman)
 function getLatestRaid(raidProgression) {
   if (!raidProgression || typeof raidProgression !== 'object') return null;
   
   const raids = Object.keys(raidProgression);
   if (raids.length === 0) return null;
   
-  // En yüksek toplam kill'e sahip raid'i bul
-  let latestRaid = null;
-  let maxKills = -1;
-  
-  for (const raidName of raids) {
-    const raid = raidProgression[raidName];
-    const totalKills = (raid.mythic_bosses_killed || 0) + 
-                       (raid.heroic_bosses_killed || 0) + 
-                       (raid.normal_bosses_killed || 0);
-    
-    if (totalKills > maxKills) {
-      maxKills = totalKills;
-      latestRaid = raid;
-    }
-  }
+ // Son eklenen raid'i al (Object.keys son elemandır)
+const lastRaidName = raids[raids.length - 1];
+return raidProgression[lastRaidName];
   
   return latestRaid;
 }
