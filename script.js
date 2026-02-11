@@ -449,7 +449,7 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
            role="listitem">
         <div class="member-card-header">
           <img class="member-avatar" 
-               src="${member.thumbnail || 'https://render.worldofwarcraft.com/eu/character/' + member.realm.toLowerCase() + '/' + member.name.toLowerCase() + '/avatar.jpg'}" 
+               src="${member.thumbnail || 'https://render.worldofwarcraft.com/' + (member.region || 'eu') + '/character/' + member.realm.toLowerCase().replace(/\\s+/g, '-') + '/' + member.name.toLowerCase() + '/avatar.jpg'}" 
                alt="${member.name}"
                onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect fill=%22%23333%22 width=%2260%22 height=%2260%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23fff%22 font-size=%2224%22%3E${member.name.charAt(0)}%3C/text%3E%3C/svg%3E'" />
           <div class="member-info">
