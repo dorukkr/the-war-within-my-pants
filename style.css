@@ -444,3 +444,243 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
   .t-item{ width:92%; left:4% !important; }
   .members-image { width: 92vw; max-width: 92vw; }
 }
+
+/* =========================
+   WoW Class Cards (Apply Form)
+========================= */
+
+/* Class renk değişkenleri */
+:root {
+  --class-death-knight: #C41F3B;
+  --class-demon-hunter: #A330C9;
+  --class-druid: #FF7D0A;
+  --class-evoker: #33937F;
+  --class-hunter: #ABD473;
+  --class-mage: #40C7EB;
+  --class-monk: #00FF96;
+  --class-paladin: #F58CBA;
+  --class-priest: #FFFFFF;
+  --class-rogue: #FFF569;
+  --class-shaman: #0070DE;
+  --class-warlock: #8787ED;
+  --class-warrior: #C79C6E;
+}
+
+/* Grid layout */
+.class-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* Class card */
+.class-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 10px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+
+/* Checkbox gizli */
+.class-card input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Class ikonu */
+.class-card .class-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Class adı */
+.class-card .class-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  text-align: center;
+  line-height: 1.2;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+/* Hover efekti */
+.class-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(0, 0, 0, 0.65);
+}
+
+.class-card:hover .class-icon {
+  transform: scale(1.08);
+}
+
+/* Seçili durumda class rengi arka plan */
+.class-card input:checked ~ .class-icon {
+  border-color: #fff;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.6);
+}
+
+/* Death Knight */
+.class-card[data-class="death-knight"] input:checked ~ * {
+  color: var(--class-death-knight);
+}
+.class-card[data-class="death-knight"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(196, 31, 59, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-death-knight);
+  box-shadow: 0 0 16px rgba(196, 31, 59, 0.4);
+}
+
+/* Demon Hunter */
+.class-card[data-class="demon-hunter"] input:checked ~ * {
+  color: var(--class-demon-hunter);
+}
+.class-card[data-class="demon-hunter"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(163, 48, 201, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-demon-hunter);
+  box-shadow: 0 0 16px rgba(163, 48, 201, 0.4);
+}
+
+/* Druid */
+.class-card[data-class="druid"] input:checked ~ * {
+  color: var(--class-druid);
+}
+.class-card[data-class="druid"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(255, 125, 10, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-druid);
+  box-shadow: 0 0 16px rgba(255, 125, 10, 0.4);
+}
+
+/* Evoker */
+.class-card[data-class="evoker"] input:checked ~ * {
+  color: var(--class-evoker);
+}
+.class-card[data-class="evoker"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(51, 147, 127, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-evoker);
+  box-shadow: 0 0 16px rgba(51, 147, 127, 0.4);
+}
+
+/* Hunter */
+.class-card[data-class="hunter"] input:checked ~ * {
+  color: var(--class-hunter);
+}
+.class-card[data-class="hunter"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(171, 212, 115, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-hunter);
+  box-shadow: 0 0 16px rgba(171, 212, 115, 0.4);
+}
+
+/* Mage */
+.class-card[data-class="mage"] input:checked ~ * {
+  color: var(--class-mage);
+}
+.class-card[data-class="mage"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(64, 199, 235, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-mage);
+  box-shadow: 0 0 16px rgba(64, 199, 235, 0.4);
+}
+
+/* Monk */
+.class-card[data-class="monk"] input:checked ~ * {
+  color: var(--class-monk);
+}
+.class-card[data-class="monk"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(0, 255, 150, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-monk);
+  box-shadow: 0 0 16px rgba(0, 255, 150, 0.4);
+}
+
+/* Paladin */
+.class-card[data-class="paladin"] input:checked ~ * {
+  color: var(--class-paladin);
+}
+.class-card[data-class="paladin"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(245, 140, 186, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-paladin);
+  box-shadow: 0 0 16px rgba(245, 140, 186, 0.4);
+}
+
+/* Priest */
+.class-card[data-class="priest"] input:checked ~ * {
+  color: var(--class-priest);
+}
+.class-card[data-class="priest"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-priest);
+  box-shadow: 0 0 16px rgba(255, 255, 255, 0.4);
+}
+
+/* Rogue */
+.class-card[data-class="rogue"] input:checked ~ * {
+  color: var(--class-rogue);
+}
+.class-card[data-class="rogue"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(255, 245, 105, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-rogue);
+  box-shadow: 0 0 16px rgba(255, 245, 105, 0.4);
+}
+
+/* Shaman */
+.class-card[data-class="shaman"] input:checked ~ * {
+  color: var(--class-shaman);
+}
+.class-card[data-class="shaman"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(0, 112, 222, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-shaman);
+  box-shadow: 0 0 16px rgba(0, 112, 222, 0.4);
+}
+
+/* Warlock */
+.class-card[data-class="warlock"] input:checked ~ * {
+  color: var(--class-warlock);
+}
+.class-card[data-class="warlock"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(135, 135, 237, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-warlock);
+  box-shadow: 0 0 16px rgba(135, 135, 237, 0.4);
+}
+
+/* Warrior */
+.class-card[data-class="warrior"] input:checked ~ * {
+  color: var(--class-warrior);
+}
+.class-card[data-class="warrior"]:has(input:checked) {
+  background: linear-gradient(135deg, rgba(199, 156, 110, 0.25), rgba(0, 0, 0, 0.6));
+  border-color: var(--class-warrior);
+  box-shadow: 0 0 16px rgba(199, 156, 110, 0.4);
+}
+
+/* Mobil responsive */
+@media (max-width: 640px) {
+  .class-grid {
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+  }
+  
+  .class-card {
+    padding: 10px 8px;
+  }
+  
+  .class-card .class-icon {
+    width: 40px;
+    height: 40px;
+  }
+  
+  .class-card .class-name {
+    font-size: 0.75rem;
+  }
+}
