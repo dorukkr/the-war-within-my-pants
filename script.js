@@ -439,10 +439,19 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
 
   // 3. Member Card HTML oluştur
   function createMemberCard(member) {
-    const classColor = CLASS_COLORS[member.class] || '#ddd';
-    const roleIcon = member.role === 'Tank' ? 'tank' : member.role === 'Healer' ? 'healer' : 'dps';
-    
-    return `
+  const classColor = CLASS_COLORS[member.mainClass] || '#ddd';
+  const roleIcon = member.role === 'Tank' ? 'tank' : member.role === 'Healer' ? 'healer' : 'dps';
+  
+  // Raider.IO URL oluştur
+  const raiderIOUrl = `https://raider.io/characters/${member.region || 'eu'}/${encodeURIComponent(member.realm.toLowerCase().replace(/\s+/g, '-'))}/${encodeURIComponent(member.name.toLowerCase())}`;
+  
+  return `
+    <a href="${raiderIOUrl}" 
+       target="_blank" 
+       rel="noopener noreferrer" 
+       class="member-card-link"
+       aria-label="View ${member.name}'s Raider.IO profile">
+
       <div class="member-card" 
            style="--class-color: ${classColor}; --class-color-glow: ${classColor}40;"
            data-rank="${member.rank}"
@@ -496,6 +505,7 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
           <span class="badge type-${member.type.toLowerCase()}">${member.type}</span>
         </div>
       </div>
+      </a>
     `;
   }
 
