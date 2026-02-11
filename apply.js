@@ -36,10 +36,9 @@
   };
 
   const getClasses = () => {
-    const sel = form.querySelector('#class');
-    if (!sel) return [];
-    return Array.from(sel.selectedOptions).map(o => o.value);
-  };
+  const checkboxes = form.querySelectorAll('input[name="class"]:checked');
+  return Array.from(checkboxes).map(cb => cb.value);
+};
 
   const getRoles = () =>
     Array.from(form.querySelectorAll('input[name="role"]:checked')).map(x => x.value);
