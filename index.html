@@ -103,20 +103,36 @@
       <div class="scroll-indicator" aria-hidden="true">Scroll</div>
     </section>
 
-    <!-- =============== MEMBERS =============== -->
-    <section id="members" class="fade-in" aria-label="Guild members">
-      <div class="members-container">
-        <h2 class="members-title">Officers & Roster</h2>
-        <img
-          src="images/memberskopyaa.jpg"
-          alt="Guild management team"
-          class="members-image progress-animate"
-          onerror="this.style.display='none'"
-          width="1600" height="900"
-          loading="lazy" decoding="async"
-        >
-      </div>
-    </section>
+   <!-- =============== MEMBERS =============== -->
+<section id="members" class="fade-in" aria-label="Guild members">
+  <div class="members-container">
+    <h2 class="members-title">Officers & Roster</h2>
+    
+    <!-- Filter Tabs -->
+    <div class="roster-filters" role="tablist">
+      <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All Members</button>
+      <button class="filter-btn" data-filter="Officer" role="tab">Officers</button>
+      <button class="filter-btn" data-filter="Member" role="tab">Members</button>
+      <button class="filter-btn" data-filter="Trial" role="tab">Trials</button>
+    </div>
+
+    <!-- Loading State -->
+    <div id="rosterLoading" class="roster-loading">
+      <div class="spinner"></div>
+      <p>Loading roster...</p>
+    </div>
+
+    <!-- Roster Grid -->
+    <div id="rosterGrid" class="roster-grid" role="list" style="display:none;">
+      <!-- Kartlar buraya dinamik olarak eklenecek -->
+    </div>
+
+    <!-- Error State -->
+    <div id="rosterError" class="roster-error" style="display:none;">
+      <p>⚠️ Roster yüklenemedi. Lütfen daha sonra tekrar deneyin.</p>
+    </div>
+  </div>
+</section>
 
     <!-- =============== RAIDS =============== -->
     <section id="raids" class="parallax-bg bg-raids" aria-label="Raids and Mythic Plus">
