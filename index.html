@@ -137,10 +137,31 @@
 
     <!-- =============== RAIDS =============== -->
     <section id="raids" class="parallax-bg bg-raids" aria-label="Raids and Mythic Plus">
-      <div class="content-box fade-in progress-animate">
-        <h2>Raids & Mythic+</h2>
-        <p>Prepare your potions, sharpen your swords, and let’s push keys and defeat bosses together.</p>
+  <div class="content-box fade-in progress-animate">
+    <h2>Raids & Mythic+</h2>
+    <p>Prepare your potions, sharpen your swords, and let's push keys and defeat bosses together.</p>
 
+    <!-- YENİ: Raid Schedule -->
+    <div class="raid-schedule-container">
+      <h3>📅 Upcoming Raid</h3>
+      
+      <!-- Loading State -->
+      <div id="raidScheduleLoading" class="raid-schedule-loading">
+        <div class="spinner-small"></div>
+        <p>Loading event...</p>
+      </div>
+
+      <!-- Event Card -->
+      <div id="raidScheduleCard" class="raid-schedule-card" style="display:none;">
+        <!-- JavaScript ile dinamik içerik gelecek -->
+      </div>
+
+      <!-- Error State -->
+      <div id="raidScheduleError" class="raid-schedule-error" style="display:none;">
+        <p>No upcoming raids scheduled.</p>
+      </div>
+    </div>
+    
         <div class="cards" role="list">
           <div class="card" role="listitem"><h3>Schedule</h3><p>Thursday &amp; Sun — 20:00 (Server)</p></div>
           <div class="card" role="listitem"><h3>Requirements</h3><p>Flasks, food, enchants, and good vibes.</p></div>
