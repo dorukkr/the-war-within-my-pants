@@ -287,4 +287,88 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
 
   bars.forEach(bar => io.observe(bar));
 })();
+/* =========================================================
+   Guild Logo: Click Particle Explosion
+========================================================= */
+(() => {
+  const logo = document.getElementById('guildLogo');
+  const canvas = document.getElementById('logoParticleCanvas');
+  if (!logo || !canvas) return;
+  if (prefersReduced) return; // reduced motion: animasyon yok
 
+  const ctx = canvas.getContext('2d', { alpha: true });
+  let particles = [];
+  let animationId = null;
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize, { passive: true });
+
+  // Particle class
+  class Particle {
+    constructor(x, y) {
+      this.x = x;
+      this.y = y;
+      this.vx = (Math.random() - 0.5) * 8;
+      this.vy = (Math.random() - 0.5) * 8 - 2; // yukarı yönlü bias
+      this.life = 1; // 1 = tam, 0 = ölü
+      this.size = Math.random() * 6 + 3;
+      this.color = `hsl(${45 + Math.random() * 15}, 100%, ${60 + Math.random() * 20}%)`;
+      this.gravity = 0.15;
+    }
+
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += this.gravity; // gravity etkisi
+      this.life -= 0.015; // fade out
+      this.vx *= 0.98; // friction
+    }
+
+    draw() {
+      ctx.globalAlpha = Math.max(0, this.life);
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
+      ctx.fillStyle = this.color;
+      ctx.shadowBlur = 15;
+      ctx.shadowColor = this.color;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+    }
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    for (let i = particles.length - 1; i >= 0; i--) {
+      const p = particles[i];
+      p.update();
+      p.draw();
+      if (p.life <= 0) particles.splice(i, 1);
+    }
+
+    if (particles.length > 0) {
+      animationId = requestAnimationFrame(animate);
+    } else {
+      animationId = null;
+    }
+  }
+
+  logo.addEventListener('click', (e) => {
+    const rect = logo.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    // 40-60 parçacık oluştur
+    const count = 50;
+    for (let i = 0; i < count; i++) {
+      particles.push(new Particle(centerX, centerY));
+    }
+
+    if (!animationId) animate();
+  });
+})();
