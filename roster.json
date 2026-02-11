@@ -3,6 +3,7 @@
     {
       "name": "Toxarica",
       "realm": "Twisting Nether",
+      "region": "eu",
       "classes": ["Death Knight", "Warrior", "Hunter", "Priest", "Shaman"],
       "mainClass": "Death Knight",
       "role": "DPS",
@@ -13,6 +14,7 @@
     {
       "name": "Chopthechop",
       "realm": "Ravencrest",
+      "region": "eu",
       "classes": ["Warrior", "Paladin", "Shaman", "Monk", "Hunter", "Evoker", "Warlock", "Mage", "Death Knight"],
       "mainClass": "Warrior",
       "role": "DPS",
@@ -23,6 +25,7 @@
     {
       "name": "Dwigga",
       "realm": "Ragnaros",
+      "region": "eu",
       "classes": ["Warrior", "Demon Hunter"],
       "mainClass": "Warrior",
       "role": "Tank",
@@ -33,6 +36,7 @@
     {
       "name": "Touchmedirty",
       "realm": "Silvermoon",
+      "region": "eu",
       "classes": ["Paladin", "Warrior", "Death Knight", "Priest"],
       "mainClass": "Paladin",
       "role": "DPS",
@@ -43,6 +47,7 @@
     {
       "name": "Thallean",
       "realm": "Twisting Nether",
+      "region": "eu",
       "classes": ["Demon Hunter", "Death Knight", "Mage"," Warrior"],
       "mainClass": "Demon Hunter",
       "role": "DPS",
@@ -53,6 +58,7 @@
     {
       "name": "Aethnar",
       "realm": "Twisting Nether",
+      "region": "eu",
       "classes": ["Warlock", "Monk", " Warrior"],
       "mainClass": "Warlock",
       "role": "DPS",
@@ -63,6 +69,7 @@
     {
       "name": "Startle",
       "realm": "Quel'Thalas",
+      "region": "eu",
       "classes": ["Druid"],
       "mainClass": "Druid",
       "role": "DPS",
@@ -73,6 +80,7 @@
     {
       "name": "Flapper",
       "realm": "Twisting Nether",
+      "region": "eu",
       "classes": ["Priest", "Shaman"],
       "mainClass": "Priest",
       "role": "Healer",
@@ -83,6 +91,7 @@
     {
       "name": "Haileý",
       "realm": "Pozzo dell'Eternità",
+      "region": "eu",
       "classes": ["Paladin", "Druid", "Priest", "Death Knight", "Demon Hunter"],
       "mainClass": "Paladin",
       "role": "Healer",
