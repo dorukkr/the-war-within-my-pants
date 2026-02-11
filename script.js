@@ -415,8 +415,32 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
     }
   }
 
-  // 2. Raider.IO API'den veri çek (opsiyonel)
-  async function enrichWithRaiderIO(member) {
+  // Raid progress öncelik mantığı: Mythic > Heroic > Normal
+function getHighestRaidProgress(raidData) {
+  if (!raidData) return '—';
+  
+  const totalBosses = raidData.total_bosses || 8;
+  
+  // Mythic öncelikli
+  if (raidData.mythic_bosses_killed > 0) {
+    return `${raidData.mythic_bosses_killed}/${totalBosses} M`;
+  }
+  
+  // Heroic
+  if (raidData.heroic_bosses_killed > 0) {
+    return `${raidData.heroic_bosses_killed}/${totalBosses} H`;
+  }
+  
+  // Normal
+  if (raidData.normal_bosses_killed > 0) {
+    return `${raidData.normal_bosses_killed}/${totalBosses} N`;
+  }
+  
+  return '—';
+}
+
+// 2. Raider.IO API'den veri çek (opsiyonel)
+async function enrichWithRaiderIO(member) {
     try {
      const region = member.region || 'eu'; // fallback to eu if not specified
       const url = `https://raider.io/api/v1/characters/profile?region=${region}&realm=${member.realm}&name=${member.name}&fields=gear,mythic_plus_scores_by_season:current,raid_progression`;
@@ -428,7 +452,7 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
         ...member,
         ilvl: data.gear?.item_level_equipped || '—',
         mplusScore: data.mythic_plus_scores_by_season?.[0]?.scores?.all || 0,
-        raidProgress: data.raid_progression?.['liberation-of-undermine']?.summary || '—',
+        raidProgress: getHighestRaidProgress(data.raid_progression?.['liberation-of-undermine']),
         thumbnail: data.thumbnail_url || ''
       };
     } catch (err) {
