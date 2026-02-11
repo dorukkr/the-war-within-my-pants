@@ -418,36 +418,41 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
    
 // Son eklenen raid'i bul (Object.keys'deki son eleman)
 function getLatestRaid(raidProgression) {
-  if (!raidProgression || typeof raidProgression !== 'object') return null;
+  if (!raidProgression || typeof raidProgression !== 'object') {
+    console.log('⚠️ getLatestRaid: raidProgression null veya object değil');
+    return null;
+  }
   
   const raids = Object.keys(raidProgression);
-  if (raids.length === 0) return null;
+  if (raids.length === 0) {
+    console.log('⚠️ getLatestRaid: Raid listesi boş');
+    return null;
+  }
   
- // Son eklenen raid'i al (Object.keys son elemandır)
-const lastRaidName = raids[raids.length - 1];
-return raidProgression[lastRaidName];
-  
-  return latestRaid;
+  // Son raid'i al (API genelde kronolojik sırada döner)
+  const lastRaidName = raids[raids.length - 1];
+  console.log(`✅ Son raid seçildi: ${lastRaidName}`, raidProgression[lastRaidName]);
+  return raidProgression[lastRaidName];
 }
-  // Raid progress öncelik mantığı: Mythic > Heroic > Normal
+ // Raid progress öncelik mantığı: Mythic > Heroic > Normal
 function getHighestRaidProgress(raidData) {
   if (!raidData) return '—';
   
   const totalBosses = raidData.total_bosses || 8;
   
-  // Mythic öncelikli
+  // Mythic öncelikli (Mor)
   if (raidData.mythic_bosses_killed > 0) {
-    return `${raidData.mythic_bosses_killed}/${totalBosses} M`;
+    return `<span class="raid-mythic">${raidData.mythic_bosses_killed}/${totalBosses} M</span>`;
   }
   
-  // Heroic
+  // Heroic (Lacivert)
   if (raidData.heroic_bosses_killed > 0) {
-    return `${raidData.heroic_bosses_killed}/${totalBosses} H`;
+    return `<span class="raid-heroic">${raidData.heroic_bosses_killed}/${totalBosses} H</span>`;
   }
   
-  // Normal
+  // Normal (Yeşil)
   if (raidData.normal_bosses_killed > 0) {
-    return `${raidData.normal_bosses_killed}/${totalBosses} N`;
+    return `<span class="raid-normal">${raidData.normal_bosses_killed}/${totalBosses} N</span>`;
   }
   
   return '—';
@@ -462,13 +467,20 @@ async function enrichWithRaiderIO(member) {
       if (!resp.ok) return member;
       
       const data = await resp.json();
-      return {
-        ...member,
-        ilvl: data.gear?.item_level_equipped || '—',
-        mplusScore: data.mythic_plus_scores_by_season?.[0]?.scores?.all || 0,
-        raidProgress: getHighestRaidProgress(getLatestRaid(data.raid_progression)),
-        thumbnail: data.thumbnail_url || ''
-      };
+
+// Debug: API response'u logla
+console.log(`📊 ${member.name} API Response:`, {
+  raids: data.raid_progression ? Object.keys(data.raid_progression) : 'YOK',
+  latestRaid: getLatestRaid(data.raid_progression)
+});
+
+return {
+  ...member,
+  ilvl: data.gear?.item_level_equipped || '—',
+  mplusScore: data.mythic_plus_scores_by_season?.[0]?.scores?.all || 0,
+  raidProgress: getHighestRaidProgress(getLatestRaid(data.raid_progression)),
+  thumbnail: data.thumbnail_url || ''
+};
     } catch (err) {
       console.warn(`Raider.IO API hatası (${member.name}):`, err);
       return member;
