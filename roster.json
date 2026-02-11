@@ -90,7 +90,7 @@
     },
     {
       "name": "Haileý",
-      "realm": "Pozzo dell'Eternità",
+      "realm": "Pozzo dellEternità",
       "region": "eu",
       "classes": ["Paladin", "Druid", "Priest", "Death Knight", "Demon Hunter"],
       "mainClass": "Paladin",
@@ -98,6 +98,138 @@
       "rank": "Officer",
       "type": "Main",
       "notes": "Main Healer"
-    }
+    },
+    {
+      "name": "Coppercrown",
+      "realm": "Argent Dawn",
+      "region": "eu",
+      "classes": ["Paladin", "Druid", "Monk", "Hunter"],
+      "mainClass": "Druid",
+      "role": "Healer",
+      "rank": "Officer",
+      "type": "Main",
+      "notes": "Recruitment Officer"
+    },
+    {
+      "name": "Syntara",
+      "realm": "Twisting Nether",
+      "region": "eu",
+      "classes": ["Priest", "Druid"],
+      "mainClass": "Priest",
+      "role": "Healer",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main Healer"
+    },
+    {
+      "name": "Mímð",
+      "realm": "Ravencrest",
+      "region": "eu",
+      "classes": ["Demon Hunter"],
+      "mainClass": "Demon Hunter",
+      "role": "DPS",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+    {
+      "name": "Jaene",
+      "realm": "Ragnaros",
+      "region": "eu",
+      "classes": ["Hunter", "Priest", "Druid", "Death Knight"],
+      "mainClass": "Hunter",
+      "role": "DPS",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+    {
+      "name": "Highergaard",
+      "realm": "Silvermoon",
+      "region": "eu",
+      "classes": ["Mage"],
+      "mainClass": "Mage",
+      "role": "DPS",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+    {
+      "name": "Jinxeh",
+      "realm": "Silvermoon",
+      "region": "eu",
+      "classes": ["Warrior", "Shaman", "Priest", "Demon Hunter"],
+      "mainClass": "Warrior",
+      "role": "Tank",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main Tank"
+    },
+    {
+      "name": "Hopelight",
+      "realm": "Draenor",
+      "region": "eu",
+      "classes": ["Priest"],
+      "mainClass": "Priest",
+      "role": "Healer",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main Healer"
+    },
+    {
+      "name": "Keilly",
+      "realm": "Twisting Nether",
+      "region": "eu",
+      "classes": ["Demon Hunter", "Death Knight"],
+      "mainClass": "Demon Hunter",
+      "role": "DPS",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+    {
+      "name": "Purecrave",
+      "realm": "Tarren Mill",
+      "region": "eu",
+      "classes": ["Demon Hunter"],
+      "mainClass": "Demon Hunter",
+      "role": "DPS",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main DPS and TANK"
+    },
+     {
+      "name": "Alashamm",
+      "realm": "Twisting Nether",
+      "region": "eu",
+      "classes": ["Shaman"],
+      "mainClass": "Shaman",
+      "role": "DPS",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+     {
+      "name": "Holstana",
+      "realm": "Doomhammer",
+      "region": "eu",
+      "classes": ["Demon Hunter", "Druid"],
+      "mainClass": "Demon Hunter",
+      "role": "DPS",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+    {
+      "name": "Pyrogasmic",
+      "realm": "Draenor",
+      "region": "eu",
+      "classes": ["Warlock"],
+      "mainClass": "Warlock",
+      "role": "DPS",
+      "rank": "Member",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
   ]
 }
