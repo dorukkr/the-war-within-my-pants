@@ -31,8 +31,8 @@ export default async function handler(req, res) {
     // En yakın event'i bul (gelecekteki, en yakın tarihli)
     const now = new Date();
     const upcomingEvents = data.events
-      .filter(event => new Date(event.start_time) > now)
-      .sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+  .filter(event => new Date(event.start_time * 1000) > now)
+  .sort((a, b) => new Date(a.start_time * 1000) - new Date(b.start_time * 1000));
 
     const closestEvent = upcomingEvents[0] || null;
     
