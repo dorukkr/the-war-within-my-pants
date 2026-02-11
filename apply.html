@@ -321,7 +321,17 @@
 
       // Discord zorunlu
       if (!discord.value.trim())      { valid=false; showError(discord,"This field is required."); }
-
+      
+      if (classes.length === 0) {
+  valid = false;
+  const classGrid = form.querySelector('.class-grid');
+  if (classGrid) {
+    const errDiv = document.createElement('div');
+    errDiv.className = 'error-message';
+    errDiv.textContent = 'Please select at least one class.';
+    classGrid.parentElement.appendChild(errDiv);
+  }
+}
       if (form.querySelectorAll("input[name='role']:checked").length === 0){
         valid=false; showError(form.querySelector(".chips"), "Please select at least one role.");
       }
@@ -337,7 +347,7 @@
       if (!valid) return;
 
       // değerleri topla
-      const classes = Array.from(document.querySelectorAll("#class option:checked")).map(o=>o.value);
+      const classes = Array.from(document.querySelectorAll("input[name='class']:checked")).map(cb=>cb.value);
       const roles   = Array.from(document.querySelectorAll("input[name='role']:checked")).map(x=>x.value);
       const notes   = (document.getElementById("notes")?.value || "").trim();
       const discordVal = discord.value.trim(); // NEW
