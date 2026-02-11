@@ -476,7 +476,7 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
             <span class="label">Role</span>
             <span class="value"><span class="role-icon ${roleIcon}">${member.role}</span></span>
           </div>
-          ${member.classes && member.classes.length > 1 ? `
+          ${member.classes && (member.classes.includes('YES') || member.classes.length > 1) ? `
           <div class="member-stat">
             <span class="label">Alts</span>
             <span class="value" style="font-size: 0.8rem; line-height: 1.4;">
