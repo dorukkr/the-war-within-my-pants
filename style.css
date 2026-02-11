@@ -379,9 +379,11 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 /* Roster Grid */
 .roster-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr); /* Desktop: 3 sütun */
   gap: 20px;
   padding: 10px;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 /* Member Card */
@@ -519,14 +521,41 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 .role-icon.dps::before { content: '⚔️'; }
 
 /* Responsive */
+
+/* Tablet (2 sütun) */
+@media (max-width: 1024px) {
+  .roster-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+}
+
+/* Mobil (1 sütun) */
 @media (max-width: 768px) {
   .roster-grid {
     grid-template-columns: 1fr;
     gap: 16px;
+    padding: 5px;
   }
   
   .member-card {
     padding: 16px;
+  }
+}
+
+/* Küçük mobil */
+@media (max-width: 480px) {
+  .member-card {
+    padding: 14px;
+  }
+  
+  .member-card-header {
+    gap: 10px;
+  }
+  
+  .member-avatar {
+    width: 50px;
+    height: 50px;
   }
 }
 
