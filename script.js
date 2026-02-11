@@ -372,3 +372,205 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
     if (!animationId) animate();
   });
 })();
+
+
+/* =========================================================
+   Guild Roster Manager (Hybrid: JSON + Raider.IO API)
+========================================================= */
+(() => {
+  const grid = document.getElementById('rosterGrid');
+  const loading = document.getElementById('rosterLoading');
+  const error = document.getElementById('rosterError');
+  if (!grid || !loading) return;
+
+  const CLASS_COLORS = {
+    'Death Knight': '#C41F3B',
+    'Demon Hunter': '#A330C9',
+    'Druid': '#FF7D0A',
+    'Evoker': '#33937F',
+    'Hunter': '#ABD473',
+    'Mage': '#40C7EB',
+    'Monk': '#00FF96',
+    'Paladin': '#F58CBA',
+    'Priest': '#FFFFFF',
+    'Rogue': '#FFF569',
+    'Shaman': '#0070DE',
+    'Warlock': '#8787ED',
+    'Warrior': '#C79C6E'
+  };
+
+  let allMembers = [];
+  let currentFilter = 'all';
+
+  // 1. Manuel JSON yükle
+  async function loadManualData() {
+    try {
+      const resp = await fetch('roster.json');
+      if (!resp.ok) throw new Error('roster.json bulunamadı');
+      const data = await resp.json();
+      return data.members || [];
+    } catch (err) {
+      console.warn('roster.json yüklenemedi:', err);
+      return [];
+    }
+  }
+
+  // 2. Raider.IO API'den veri çek (opsiyonel)
+  async function enrichWithRaiderIO(member) {
+    try {
+      const url = `https://raider.io/api/v1/characters/profile?region=${member.region}&realm=${member.realm}&name=${member.name}&fields=gear,mythic_plus_scores_by_season:current,raid_progression`;
+      const resp = await fetch(url);
+      if (!resp.ok) return member;
+      
+      const data = await resp.json();
+      return {
+        ...member,
+        ilvl: data.gear?.item_level_equipped || '—',
+        mplusScore: data.mythic_plus_scores_by_season?.[0]?.scores?.all || 0,
+        raidProgress: data.raid_progression?.['liberation-of-undermine']?.summary || '—',
+        thumbnail: data.thumbnail_url || ''
+      };
+    } catch (err) {
+      console.warn(`Raider.IO API hatası (${member.name}):`, err);
+      return member;
+    }
+  }
+
+  // 3. Member Card HTML oluştur
+  function createMemberCard(member) {
+    const classColor = CLASS_COLORS[member.class] || '#ddd';
+    const roleIcon = member.role === 'Tank' ? 'tank' : member.role === 'Healer' ? 'healer' : 'dps';
+    
+    return `
+      <div class="member-card" 
+           style="--class-color: ${classColor}; --class-color-glow: ${classColor}40;"
+           data-rank="${member.rank}"
+           role="listitem">
+        <div class="member-card-header">
+          <img class="member-avatar" 
+               src="${member.thumbnail || 'https://render.worldofwarcraft.com/eu/character/' + member.realm.toLowerCase() + '/' + member.name.toLowerCase() + '/avatar.jpg'}" 
+               alt="${member.name}"
+               onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect fill=%22%23333%22 width=%2260%22 height=%2260%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23fff%22 font-size=%2224%22%3E${member.name.charAt(0)}%3C/text%3E%3C/svg%3E'" />
+          <div class="member-info">
+            <h3>${member.name}</h3>
+            <p class="realm">${member.realm} (${member.region.toUpperCase()})</p>
+          </div>
+        </div>
+
+        <div class="member-card-body">
+          <div class="member-stat">
+            <span class="label">Class</span>
+            <span class="value" style="color: ${classColor};">${member.class}</span>
+          </div>
+          <div class="member-stat">
+            <span class="label">Role</span>
+            <span class="value"><span class="role-icon ${roleIcon}">${member.role}</span></span>
+          </div>
+          ${member.ilvl ? `
+          <div class="member-stat">
+            <span class="label">Item Level</span>
+            <span class="value">${member.ilvl}</span>
+          </div>` : ''}
+          ${member.mplusScore ? `
+          <div class="member-stat">
+            <span class="label">M+ Score</span>
+            <span class="value">${member.mplusScore}</span>
+          </div>` : ''}
+          ${member.raidProgress ? `
+          <div class="member-stat">
+            <span class="label">Raid Progress</span>
+            <span class="value" style="font-size: 0.8rem;">${member.raidProgress}</span>
+          </div>` : ''}
+        </div>
+
+        <div class="member-badges">
+          <span class="badge rank-${member.rank.toLowerCase()}">${member.rank}</span>
+          <span class="badge type-${member.type.toLowerCase()}">${member.type}</span>
+        </div>
+      </div>
+    `;
+  }
+
+  // 4. Grid'i render et
+  function renderGrid(members) {
+    if (!members || members.length === 0) {
+      grid.innerHTML = '<p style="text-align:center; color:#ddd; padding:40px;">Henüz üye bulunamadı.</p>';
+      return;
+    }
+    grid.innerHTML = members.map(createMemberCard).join('');
+  }
+
+  // 5. Filtreleme
+  function filterMembers(rank) {
+    currentFilter = rank;
+    const filtered = rank === 'all' 
+      ? allMembers 
+      : allMembers.filter(m => m.rank === rank);
+    renderGrid(filtered);
+
+    // Aktif butonu güncelle
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.filter === rank);
+      btn.setAttribute('aria-selected', btn.dataset.filter === rank);
+    });
+  }
+
+  // 6. Ana yükleme fonksiyonu
+  async function init() {
+    loading.style.display = 'block';
+    grid.style.display = 'none';
+    if (error) error.style.display = 'none';
+
+    try {
+      // Manuel veri yükle
+      let members = await loadManualData();
+      
+      if (members.length === 0) {
+        throw new Error('Roster verisi bulunamadı');
+      }
+
+      // API ile zenginleştir (paralel)
+      const enriched = await Promise.all(
+        members.map(m => enrichWithRaiderIO(m))
+      );
+
+      allMembers = enriched;
+      renderGrid(allMembers);
+      
+      loading.style.display = 'none';
+      grid.style.display = 'grid';
+
+      // Fade-in animasyonu
+      setTimeout(() => {
+        document.querySelectorAll('.member-card').forEach((card, i) => {
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(20px)';
+          setTimeout(() => {
+            card.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          }, i * 50);
+        });
+      }, 50);
+
+    } catch (err) {
+      console.error('Roster yükleme hatası:', err);
+      loading.style.display = 'none';
+      if (error) error.style.display = 'block';
+    }
+  }
+
+  // Filter butonları
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterMembers(btn.dataset.filter);
+    });
+  });
+
+  // Sayfa yüklendiğinde başlat
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
