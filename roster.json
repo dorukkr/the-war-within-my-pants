@@ -1,1 +1,94 @@
-
+{
+  "members": [
+    {
+      "name": "Toxarica",
+      "realm": "Twisting Nether",
+      "classes": ["Death Knight", "Warrior", "Hunter", "Priest", "Shaman"],
+      "mainClass": "Death Knight",
+      "role": "DPS",
+      "rank": "Co-GM",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+    {
+      "name": "Chopthechop",
+      "realm": "Ravencrest",
+      "classes": ["Warrior", "Paladin", "Shaman", "Monk", "Hunter", "Evoker", "Warlock", "Mage", "Death Knight"],
+      "mainClass": "Warrior",
+      "role": "DPS",
+      "rank": "Co-GM",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+    {
+      "name": "Dwigga",
+      "realm": "Ragnaros",
+      "classes": ["Warrior", "Demon Hunter"],
+      "mainClass": "Warrior",
+      "role": "Tank",
+      "rank": "Officer",
+      "type": "Main",
+      "notes": "Main Tank"
+    },
+    {
+      "name": "Touchmedirty",
+      "realm": "Silvermoon",
+      "classes": ["Paladin", "Warrior", "Death Knight", "Priest"],
+      "mainClass": "Paladin",
+      "role": "DPS",
+      "rank": "Officer",
+      "type": "Main",
+      "notes": ""
+    },
+    {
+      "name": "Thallean",
+      "realm": "Twisting Nether",
+      "classes": ["Demon Hunter", "Death Knight", "Mage"," Warrior"],
+      "mainClass": "Demon Hunter",
+      "role": "DPS",
+      "rank": "Officer",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+    {
+      "name": "Aethnar",
+      "realm": "Twisting Nether",
+      "classes": ["Warlock", "Monk", " Warrior"],
+      "mainClass": "Warlock",
+      "role": "DPS",
+      "rank": "Officer",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+    {
+      "name": "Startle",
+      "realm": "Quel'Thalas",
+      "classes": ["Druid"],
+      "mainClass": "Druid",
+      "role": "DPS",
+      "rank": "Officer",
+      "type": "Main",
+      "notes": "Main DPS"
+    },
+    {
+      "name": "Flapper",
+      "realm": "Twisting Nether",
+      "classes": ["Priest", "Shaman"],
+      "mainClass": "Priest",
+      "role": "Healer",
+      "rank": "Officer",
+      "type": "Main",
+      "notes": "Main Healer"
+    },
+    {
+      "name": "Haileý",
+      "realm": "Pozzo dell'Eternità",
+      "classes": ["Paladin", "Druid", "Priest", "Death Knight", "Demon Hunter"],
+      "mainClass": "Paladin",
+      "role": "Healer",
+      "rank": "Officer",
+      "type": "Main",
+      "notes": "Main Healer"
+    }
+  ]
+}
