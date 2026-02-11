@@ -1,19 +1,15 @@
 // api/raid-events.js
 export default async function handler(req, res) {
   const RAID_HELPER_API_KEY = process.env.RAID_HELPER_API_KEY;
-  const SERVER_ID = process.env.DISCORD_SERVER_ID;
 
-    try {
-    console.log('[Raid-Helper] Fetching events for server:', SERVER_ID);
-    
+  // Personal API Key kullanırken Authorization header gereksiz
+  // URL formatı: /api/v3/users/{API_KEY}/events
+  
+  try {
     const response = await fetch(
-      `https://raid-helper.dev/api/v3/servers/${SERVER_ID}/events`,
-      {
-        headers: {
-          'Authorization': `Bearer ${RAID_HELPER_API_KEY}`
-        }
-      }
+      `https://raid-helper.dev/api/v3/users/${RAID_HELPER_API_KEY}/events`
     );
+
     
     console.log('[Raid-Helper] Response status:', response.status);
 
