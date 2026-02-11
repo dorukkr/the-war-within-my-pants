@@ -79,24 +79,102 @@
             </div>
             
             <div class="field">
-              <label for="class">Class <span class="req">*</span></label>
-              <select id="class" name="class" multiple required>
-                <option>Death Knight</option>
-                <option>Demon Hunter</option>
-                <option>Druid</option>
-                <option>Evoker</option>
-                <option>Hunter</option>
-                <option>Mage</option>
-                <option>Monk</option>
-                <option>Paladin</option>
-                <option>Priest</option>
-                <option>Rogue</option>
-                <option>Shaman</option>
-                <option>Warlock</option>
-                <option>Warrior</option>
-              </select>
-              <small class="hint">Hold CTRL (Windows) or CMD (Mac) to select multiple classes if you also play alts.</small>
-            </div>
+  <label class="label">Class(es) <span class="req">*</span></label>
+  <small class="hint" style="margin-bottom:12px; display:block; color:#ddd;">Select your main and alts (multiple selection allowed)</small>
+  
+  <div class="class-grid">
+    <!-- Death Knight -->
+    <label class="class-card" data-class="death-knight">
+      <input type="checkbox" name="class" value="Death Knight" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_deathknight.jpg" alt="Death Knight" class="class-icon" />
+      <span class="class-name">Death Knight</span>
+    </label>
+
+    <!-- Demon Hunter -->
+    <label class="class-card" data-class="demon-hunter">
+      <input type="checkbox" name="class" value="Demon Hunter" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_demonhunter.jpg" alt="Demon Hunter" class="class-icon" />
+      <span class="class-name">Demon Hunter</span>
+    </label>
+
+    <!-- Druid -->
+    <label class="class-card" data-class="druid">
+      <input type="checkbox" name="class" value="Druid" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_druid.jpg" alt="Druid" class="class-icon" />
+      <span class="class-name">Druid</span>
+    </label>
+
+    <!-- Evoker -->
+    <label class="class-card" data-class="evoker">
+      <input type="checkbox" name="class" value="Evoker" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_evoker.jpg" alt="Evoker" class="class-icon" />
+      <span class="class-name">Evoker</span>
+    </label>
+
+    <!-- Hunter -->
+    <label class="class-card" data-class="hunter">
+      <input type="checkbox" name="class" value="Hunter" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_hunter.jpg" alt="Hunter" class="class-icon" />
+      <span class="class-name">Hunter</span>
+    </label>
+
+    <!-- Mage -->
+    <label class="class-card" data-class="mage">
+      <input type="checkbox" name="class" value="Mage" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_mage.jpg" alt="Mage" class="class-icon" />
+      <span class="class-name">Mage</span>
+    </label>
+
+    <!-- Monk -->
+    <label class="class-card" data-class="monk">
+      <input type="checkbox" name="class" value="Monk" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_monk.jpg" alt="Monk" class="class-icon" />
+      <span class="class-name">Monk</span>
+    </label>
+
+    <!-- Paladin -->
+    <label class="class-card" data-class="paladin">
+      <input type="checkbox" name="class" value="Paladin" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_paladin.jpg" alt="Paladin" class="class-icon" />
+      <span class="class-name">Paladin</span>
+    </label>
+
+    <!-- Priest -->
+    <label class="class-card" data-class="priest">
+      <input type="checkbox" name="class" value="Priest" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_priest.jpg" alt="Priest" class="class-icon" />
+      <span class="class-name">Priest</span>
+    </label>
+
+    <!-- Rogue -->
+    <label class="class-card" data-class="rogue">
+      <input type="checkbox" name="class" value="Rogue" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_rogue.jpg" alt="Rogue" class="class-icon" />
+      <span class="class-name">Rogue</span>
+    </label>
+
+    <!-- Shaman -->
+    <label class="class-card" data-class="shaman">
+      <input type="checkbox" name="class" value="Shaman" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_shaman.jpg" alt="Shaman" class="class-icon" />
+      <span class="class-name">Shaman</span>
+    </label>
+
+    <!-- Warlock -->
+    <label class="class-card" data-class="warlock">
+      <input type="checkbox" name="class" value="Warlock" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_warlock.jpg" alt="Warlock" class="class-icon" />
+      <span class="class-name">Warlock</span>
+    </label>
+
+    <!-- Warrior -->
+    <label class="class-card" data-class="warrior">
+      <input type="checkbox" name="class" value="Warrior" />
+      <img src="https://render.worldofwarcraft.com/us/icons/56/classicon_warrior.jpg" alt="Warrior" class="class-icon" />
+      <span class="class-name">Warrior</span>
+    </label>
+  </div>
+</div>
           </div>
 
           <div class="field">
