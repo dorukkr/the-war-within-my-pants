@@ -415,6 +415,31 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
     }
   }
 
+   // En aktif/son raid'i bul (en yüksek progress'li)
+function getLatestRaid(raidProgression) {
+  if (!raidProgression || typeof raidProgression !== 'object') return null;
+  
+  const raids = Object.keys(raidProgression);
+  if (raids.length === 0) return null;
+  
+  // En yüksek toplam kill'e sahip raid'i bul
+  let latestRaid = null;
+  let maxKills = -1;
+  
+  for (const raidName of raids) {
+    const raid = raidProgression[raidName];
+    const totalKills = (raid.mythic_bosses_killed || 0) + 
+                       (raid.heroic_bosses_killed || 0) + 
+                       (raid.normal_bosses_killed || 0);
+    
+    if (totalKills > maxKills) {
+      maxKills = totalKills;
+      latestRaid = raid;
+    }
+  }
+  
+  return latestRaid;
+}
   // Raid progress öncelik mantığı: Mythic > Heroic > Normal
 function getHighestRaidProgress(raidData) {
   if (!raidData) return '—';
@@ -452,7 +477,7 @@ async function enrichWithRaiderIO(member) {
         ...member,
         ilvl: data.gear?.item_level_equipped || '—',
         mplusScore: data.mythic_plus_scores_by_season?.[0]?.scores?.all || 0,
-        raidProgress: getHighestRaidProgress(data.raid_progression?.['liberation-of-undermine']),
+        raidProgress: getHighestRaidProgress(getLatestRaid(data.raid_progression)),
         thumbnail: data.thumbnail_url || ''
       };
     } catch (err) {
