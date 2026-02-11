@@ -402,11 +402,34 @@
         turnstileToken = "";
       }
     });
+    bars.forEach(bar => io.observe(bar));
   })();
-  </script>
+ /* =========================================================
+   Class Card Seçim Sayacı
+========================================================= */
+(() => {
+  const form = document.getElementById('applyForm');
+  if (!form) return;
+  
+  const classCount = document.getElementById('classCount');
+  if (!classCount) return;
+  
+  const updateCount = () => {
+    const count = form.querySelectorAll('input[name="class"]:checked').length;
+    classCount.textContent = count + ' selected';
+    classCount.style.color = count > 0 ? '#4ade80' : '#ffd36b';
+  };
+  
+  form.querySelectorAll('.class-card input').forEach(cb => {
+    cb.addEventListener('change', updateCount);
+  });
+  
+  updateCount(); // İlk yüklemede çalıştır
+})();
+</script>
 
-  <!-- Footer year -->
-  <script>document.getElementById('year').textContent=new Date().getFullYear();</script>
+<!-- Footer year -->
+<script>document.getElementById('year').textContent=new Date().getFullYear();</script>
 
   <!-- Site JS -->
   <script src="script.js"></script>
