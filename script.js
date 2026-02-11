@@ -418,7 +418,8 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
   // 2. Raider.IO API'den veri çek (opsiyonel)
   async function enrichWithRaiderIO(member) {
     try {
-      const url = `https://raider.io/api/v1/characters/profile?region=${member.region}&realm=${member.realm}&name=${member.name}&fields=gear,mythic_plus_scores_by_season:current,raid_progression`;
+     const region = member.region || 'eu'; // fallback to eu if not specified
+      const url = `https://raider.io/api/v1/characters/profile?region=${region}&realm=${member.realm}&name=${member.name}&fields=gear,mythic_plus_scores_by_season:current,raid_progression`;
       const resp = await fetch(url);
       if (!resp.ok) return member;
       
@@ -453,19 +454,26 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
                onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect fill=%22%23333%22 width=%2260%22 height=%2260%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 fill=%22%23fff%22 font-size=%2224%22%3E${member.name.charAt(0)}%3C/text%3E%3C/svg%3E'" />
           <div class="member-info">
             <h3>${member.name}</h3>
-            <p class="realm">${member.realm} (${member.region.toUpperCase()})</p>
+            <p class="realm">${member.realm} (${(member.region || 'eu').toUpperCase()})</p>
           </div>
         </div>
 
         <div class="member-card-body">
           <div class="member-stat">
-            <span class="label">Class</span>
-            <span class="value" style="color: ${classColor};">${member.class}</span>
+            <span class="label">Main Class</span>
+            <span class="value" style="color: ${classColor};">${member.mainClass}</span>
           </div>
           <div class="member-stat">
             <span class="label">Role</span>
             <span class="value"><span class="role-icon ${roleIcon}">${member.role}</span></span>
           </div>
+          ${member.classes && member.classes.length > 1 ? `
+          <div class="member-stat">
+            <span class="label">Alts</span>
+            <span class="value" style="font-size: 0.8rem; line-height: 1.4;">
+              ${member.classes.filter(c => c !== member.mainClass).join(', ')}
+            </span>
+          </div>` : ''}
           ${member.ilvl ? `
           <div class="member-stat">
             <span class="label">Item Level</span>
