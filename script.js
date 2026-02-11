@@ -665,4 +665,177 @@ return {
   } else {
     init();
   }
+/* =========================================================
+   Raid Schedule - Discord Event Display
+========================================================= */
+(() => {
+  const card = document.getElementById('raidScheduleCard');
+  const loading = document.getElementById('raidScheduleLoading');
+  const error = document.getElementById('raidScheduleError');
+  
+  if (!card || !loading) return;
+
+  // WoW Class ikonları (emoji fallback)
+  const CLASS_ICONS = {
+    'DK': '💀', 'Death Knight': '💀',
+    'DH': '😈', 'Demon Hunter': '😈',
+    'Druid': '🐻',
+    'Hunter': '🏹',
+    'Mage': '🔮',
+    'Monk': '🥋',
+    'Paladin': '⚔️',
+    'Priest': '✨',
+    'Rogue': '🗡️',
+    'Shaman': '⚡',
+    'Warlock': '🔥',
+    'Warrior': '🛡️',
+    'Evoker': '🐉'
+  };
+
+  // Tarih formatla
+  function formatEventDate(isoString) {
+    const date = new Date(isoString);
+    const options = { 
+      weekday: 'long', 
+      month: 'long', 
+      day: 'numeric', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: 'Europe/Istanbul' // Server time
+    };
+    return date.toLocaleDateString('en-US', options);
+  }
+
+  // Geri sayım
+  function getTimeUntil(isoString) {
+    const now = new Date();
+    const target = new Date(isoString);
+    const diff = target - now;
+    
+    if (diff < 0) return 'Event started';
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    if (days > 0) return `in ${days} day${days > 1 ? 's' : ''}`;
+    if (hours > 0) return `in ${hours} hour${hours > 1 ? 's' : ''}`;
+    return 'starting soon';
+  }
+
+  // Render event card
+  function renderEvent(event) {
+    if (!event) {
+      loading.style.display = 'none';
+      error.style.display = 'block';
+      return;
+    }
+
+    const signupsByClass = {};
+    event.signups.forEach(signup => {
+      const className = signup.class || signup.role;
+      if (!signupsByClass[className]) {
+        signupsByClass[className] = [];
+      }
+      signupsByClass[className].push(signup.user_name);
+    });
+
+    const html = `
+      <div class="event-header">
+        <h4 class="event-title">${event.title || 'Raid Event'}</h4>
+        ${event.description ? `<p class="event-description">${event.description}</p>` : ''}
+      </div>
+
+      <div class="event-meta">
+        <div class="event-meta-item">
+          📅 ${formatEventDate(event.start_time)}
+        </div>
+        <div class="event-meta-item">
+          ⏰ ${getTimeUntil(event.start_time)}
+        </div>
+      </div>
+
+      <div class="role-summary">
+        ${Object.keys(event.roles || {}).map(role => {
+          const roleData = event.roles[role];
+          const filled = roleData.signed >= roleData.max;
+          return `
+            <div class="role-group ${filled ? 'filled' : 'not-filled'}">
+              ${role} ${roleData.signed}/${roleData.max}
+            </div>
+          `;
+        }).join('')}
+      </div>
+
+      <div class="signups-grid">
+        ${Object.entries(signupsByClass).map(([className, players]) => `
+          <div class="class-group">
+            <div class="class-group-header">
+              <span class="class-icon">${CLASS_ICONS[className] || '⚔️'}</span>
+              ${className} (${players.length})
+            </div>
+            <ul class="player-list">
+              ${players.map((name, i) => `
+                <li class="player-item">
+                  <span class="player-number">${i + 1}</span>
+                  <span class="player-name">${name}</span>
+                </li>
+              `).join('')}
+            </ul>
+          </div>
+        `).join('')}
+      </div>
+
+      ${event.bench || event.tentative ? `
+        <div class="other-lists">
+          ${event.bench && event.bench.length > 0 ? `
+            <div class="other-list">
+              <div class="other-list-title">🪑 Bench (${event.bench.length})</div>
+              <div class="other-list-players">
+                ${event.bench.map(p => p.user_name).join(', ')}
+              </div>
+            </div>
+          ` : ''}
+          
+          ${event.tentative && event.tentative.length > 0 ? `
+            <div class="other-list">
+              <div class="other-list-title">⚠️ Tentative (${event.tentative.length})</div>
+              <div class="other-list-players">
+                ${event.tentative.map(p => p.user_name).join(', ')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+      ` : ''}
+    `;
+
+    card.innerHTML = html;
+    loading.style.display = 'none';
+    card.style.display = 'block';
+  }
+
+  // API'den event çek
+  async function fetchRaidEvent() {
+    try {
+      const resp = await fetch('/api/raid-events'); // Serverless function
+      if (!resp.ok) throw new Error('API error');
+      
+      const data = await resp.json();
+      renderEvent(data.event);
+    } catch (err) {
+      console.error('Failed to fetch raid event:', err);
+      loading.style.display = 'none';
+      error.style.display = 'block';
+    }
+  }
+
+  // Sayfa yüklendiğinde çalıştır
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', fetchRaidEvent);
+  } else {
+    fetchRaidEvent();
+  }
+
+  // Her 5 dakikada bir güncelle (opsiyonel)
+  setInterval(fetchRaidEvent, 5 * 60 * 1000);
 })();
