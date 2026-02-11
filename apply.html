@@ -441,7 +441,103 @@
     cb.addEventListener('change', updateCount);
   });
   
-  updateCount(); // İlk yüklemede çalıştır
+    updateCount();
+})();
+
+/* =========================================================
+   Apply Form Success Modal + Confetti
+========================================================= */
+(() => {
+  const modal = document.getElementById('successModal');
+  const continueBtn = document.getElementById('successContinue');
+  const canvas = document.getElementById('confettiCanvas');
+  if (!modal || !continueBtn || !canvas) return;
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+  let confetti = [];
+  let animationId = null;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  // Confetti Particle
+  class Confetto {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = -20;
+      this.vx = (Math.random() - 0.5) * 4;
+      this.vy = Math.random() * 3 + 2;
+      this.rotation = Math.random() * 360;
+      this.rotationSpeed = (Math.random() - 0.5) * 10;
+      this.size = Math.random() * 8 + 4;
+      this.color = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'][
+        Math.floor(Math.random() * 6)
+      ];
+      this.gravity = 0.15;
+    }
+
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      this.vy += this.gravity;
+      this.rotation += this.rotationSpeed;
+      this.vx *= 0.99;
+    }
+
+    draw() {
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate((this.rotation * Math.PI) / 180);
+      ctx.fillStyle = this.color;
+      ctx.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
+      ctx.restore();
+    }
+  }
+
+  function animateConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = confetti.length - 1; i >= 0; i--) {
+      const c = confetti[i];
+      c.update();
+      c.draw();
+
+      if (c.y > canvas.height + 20) {
+        confetti.splice(i, 1);
+      }
+    }
+
+    if (confetti.length > 0) {
+      animationId = requestAnimationFrame(animateConfetti);
+    } else {
+      animationId = null;
+    }
+  }
+
+  function startConfetti() {
+    resizeCanvas();
+    for (let i = 0; i < 150; i++) {
+      confetti.push(new Confetto());
+    }
+    if (!animationId) animateConfetti();
+  }
+
+  // Modal göster
+  window.showSuccessModal = function() {
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    startConfetti();
+  };
+
+  // Continue butonu
+  continueBtn.addEventListener('click', () => {
+    window.location.href = '/thank-you';
+  });
+
+  // Window resize
+  window.addEventListener('resize', resizeCanvas, { passive: true });
 })();
 </script>
 
