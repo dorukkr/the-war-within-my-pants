@@ -397,10 +397,18 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
     'Shaman': '#0070DE',
     'Warlock': '#8787ED',
     'Warrior': '#C79C6E'
-  };
+   };
+
+  // TWW Raid Kronolojisi (Midnight çıktığında güncelle)
+  const TWW_RAIDS = [
+    'nerub-ar-palace',           // Season 1
+    'liberation-of-undermine',   // Season 2
+    'manaforge-omega'            // Season 3 (En son)
+  ];
 
   let allMembers = [];
   let currentFilter = 'all';
+
 
   // 1. Manuel JSON yükle
   async function loadManualData() {
@@ -416,43 +424,59 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
   }
 
    
-// Son eklenen raid'i bul (Object.keys'deki son eleman)
+
+// TWW'nin en son aktif raid'ini bul (öncelik sırasına göre)
 function getLatestRaid(raidProgression) {
   if (!raidProgression || typeof raidProgression !== 'object') {
     console.log('⚠️ getLatestRaid: raidProgression null veya object değil');
     return null;
   }
   
-  const raids = Object.keys(raidProgression);
-  if (raids.length === 0) {
-    console.log('⚠️ getLatestRaid: Raid listesi boş');
-    return null;
+  // Listeden geriye doğru (en son raid'den başlayarak)
+  for (let i = TWW_RAIDS.length - 1; i >= 0; i--) {
+    const raidName = TWW_RAIDS[i];
+    if (raidProgression[raidName]) {
+      console.log(`✅ Raid seçildi: ${raidName}`);
+      // Hem raid nesnesini hem de ismini döndür
+      return {
+        data: raidProgression[raidName],
+        name: raidName
+      };
+    }
   }
   
-  // Son raid'i al (API genelde kronolojik sırada döner)
-  const lastRaidName = raids[raids.length - 1];
-  console.log(`✅ Son raid seçildi: ${lastRaidName}`, raidProgression[lastRaidName]);
-  return raidProgression[lastRaidName];
+  console.log('⚠️ Hiçbir bilinen TWW raid bulunamadı');
+  return null;
 }
- // Raid progress öncelik mantığı: Mythic > Heroic > Normal
-function getHighestRaidProgress(raidData) {
-  if (!raidData) return '—';
+
+// Raid progress öncelik mantığı: Mythic > Heroic > Normal
+function getHighestRaidProgress(raidInfo) {
+  if (!raidInfo) return '—';
+  
+  const raidData = raidInfo.data;
+  const raidName = raidInfo.name;
+  
+  // Raid ismini düzgün formata çevir (manaforge-omega → Manaforge Omega)
+  const displayName = raidName
+    .split('-')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
   
   const totalBosses = raidData.total_bosses || 8;
   
   // Mythic öncelikli (Mor)
   if (raidData.mythic_bosses_killed > 0) {
-    return `<span class="raid-mythic">${raidData.mythic_bosses_killed}/${totalBosses} M</span>`;
+    return `<span class="raid-mythic">${raidData.mythic_bosses_killed}/${totalBosses} M - ${displayName}</span>`;
   }
   
   // Heroic (Lacivert)
   if (raidData.heroic_bosses_killed > 0) {
-    return `<span class="raid-heroic">${raidData.heroic_bosses_killed}/${totalBosses} H</span>`;
+    return `<span class="raid-heroic">${raidData.heroic_bosses_killed}/${totalBosses} H - ${displayName}</span>`;
   }
   
   // Normal (Yeşil)
   if (raidData.normal_bosses_killed > 0) {
-    return `<span class="raid-normal">${raidData.normal_bosses_killed}/${totalBosses} N</span>`;
+    return `<span class="raid-normal">${raidData.normal_bosses_killed}/${totalBosses} N - ${displayName}</span>`;
   }
   
   return '—';
