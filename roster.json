@@ -231,5 +231,16 @@
       "type": "Main",
       "notes": "Main DPS"
     },
+    {
+      "name": "Kothissia",
+      "realm": "Argent Dawn",
+      "region": "eu",
+      "classes": ["Evoker"],
+      "mainClass": "Evoker",
+      "role": "DPS",
+      "rank": "Trial",
+      "type": "Main",
+      "notes": "Trial DPS"
+    },
   ]
 }
