@@ -68,7 +68,7 @@
     },
     {
       "name": "Startle",
-      "realm": "Quel'Thalas",
+      "realm": "QuelThalas",
       "region": "eu",
       "classes": ["Druid"],
       "mainClass": "Druid",
