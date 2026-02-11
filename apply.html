@@ -245,6 +245,22 @@
       </ul>
     </div>
   </footer>
+</footer>
+
+  <!-- ⬇️ Success Modal (başlangıçta gizli) ⬇️ -->
+  <div id="successModal" class="success-modal" style="display:none;" aria-hidden="true">
+    <div class="success-overlay"></div>
+    <canvas id="confettiCanvas" class="confetti-canvas"></canvas>
+    
+    <div class="success-content">
+      <div class="success-icon">✓</div>
+      <h2 class="success-title">Application Sent!</h2>
+      <p class="success-message">Your application has been successfully submitted to our officers. We'll review it soon!</p>
+      <button id="successContinue" class="button-3d pressable success-btn">
+        <span>Continue</span>
+      </button>
+    </div>
+  </div>
 
   <!-- (İsteğe bağlı) harici apply.js'in varsa burada kalsın; yoksa sorun değil -->
   <script src="apply.js"></script>
@@ -393,8 +409,8 @@
           })
         });
         if (!resp.ok) throw new Error("Proxy failed: " + resp.status);
-        setStatus("Application received. Redirecting…", true);
-        window.location.href = "/thank-you";
+        setStatus("Application received!", true);
+        showSuccessModal(); // ⬅️ Redirect yerine modal aç
       } catch (err) {
         console.error(err);
         setStatus("Submission failed. Please try again later.");
