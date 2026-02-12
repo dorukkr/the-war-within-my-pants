@@ -65,9 +65,15 @@
   <main id="main">
     <!-- =============== HERO =============== -->
     <section id="hero" class="parallax-bg" aria-label="Guild intro">
+  <!-- Video Background -->
+  <video class="hero-video" autoplay muted loop playsinline preload="auto">
+    <source src="images/hero-video.mp4" type="video/mp4">
+    <!-- Fallback: Video yoksa veya yüklenemezse canvas gösterilir -->
+  </video>
+  <div class="video-overlay"></div>
+  
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
   <canvas id="logoParticleCanvas" aria-hidden="true"></canvas>
-
       
 
       <!-- Parallax layers (decorative) -->
