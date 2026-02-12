@@ -825,11 +825,17 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   });
 });
 
-// Sayfa yüklendiğinde başlat
+// Sayfa yüklendiğinde başlat (sadece members sayfasında)
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('members')) {
+      init();
+    }
+  });
 } else {
-  init();
+  if (document.getElementById('members')) {
+    init();
+  }
 }
 })();
 
