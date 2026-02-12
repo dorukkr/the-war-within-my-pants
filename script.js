@@ -647,7 +647,7 @@ return {
   // 4. Grid'i render et
   function renderGrid(members) {
     if (!members || members.length === 0) {
-      grid.innerHTML = '<p style="text-align:center; color:#ddd; padding:40px;">Henüz üye bulunamadı.</p>';
+      grid.innerHTML = '<p style="text-align:center; color:#ddd; padding:40px;">No players found.</p>';
       return;
     }
     grid.innerHTML = members.map(createMemberCard).join('');
