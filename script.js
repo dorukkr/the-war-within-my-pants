@@ -276,7 +276,6 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
 ========================================================= */
 (() => {
   if (prefersReduced) return; // reduced motion: animasyon yok
-  
   const bars = document.querySelectorAll('.progress-bar');
   if (!bars.length) return;
 
@@ -838,6 +837,18 @@ if (document.readyState === 'loading') {
   }
 }
 })();
+// Progress bar'ları başlat (raids sayfası için)
+document.addEventListener('DOMContentLoaded', () => {
+  const bars = document.querySelectorAll('.progress-bar');
+  if (bars.length > 0) {
+    bars.forEach(bar => {
+      const progress = bar.dataset.progress || 0;
+      setTimeout(() => {
+        bar.style.width = progress + '%';
+      }, 300);
+    });
+  }
+});
 
 /* =========================================================
    Raid Schedule - Discord Event Display
