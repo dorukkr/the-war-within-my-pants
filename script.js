@@ -298,15 +298,16 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
 /* =========================================================
    Guild Logo: Click Particle Explosion
 ========================================================= */
-(() => {
-  const logo = document.getElementById('guildLogo');
-  /* ==========================================
+/* KAPAT: Eski logo click explosion kodu kaldırıldı */
+
+/* ==========================================
    HERO: Floating Particles System
 ========================================== */
 (() => {
   const canvas = document.getElementById('logoParticleCanvas');
   if (!canvas) return;
   if (prefersReduced) return;
+
 
   const ctx = canvas.getContext('2d', { alpha: true });
   const particles = [];
@@ -402,12 +403,6 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
     else rafId = requestAnimationFrame(animateParticles);
   });
 })();
-
-
-    if (!animationId) animate();
-  });
-})();
-
 
 /* =========================================================
    Guild Roster Manager (Hybrid: JSON + Raider.IO API)
