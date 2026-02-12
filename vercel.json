@@ -5,11 +5,11 @@
     { "source": "/index.html", "destination": "/", "permanent": true },
     { "source": "/thanks", "destination": "/thank-you", "permanent": true }
   ],
-  "rewrites": [
-    { "source": "/home", "destination": "/" },
-    { "source": "/members", "destination": "/members.html" },
-    { "source": "/raids", "destination": "/raids.html" },
-    { "source": "/media", "destination": "/media.html" },
-    { "source": "/apply", "destination": "/apply.html" }
-  ]
+ "rewrites": [
+  { "source": "/home", "destination": "/" },
+  { "source": "/members", "destination": "/members.html" },
+  { "source": "/raids", "destination": "/raids.html" },
+  { "source": "/media", "destination": "/media.html" },
+  { "source": "/apply", "destination": "/apply.html" }
+]
 }
