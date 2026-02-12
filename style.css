@@ -196,7 +196,6 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
   display: flex;
   align-items: center;
   justify-content: center;
-  text-align: center;
   background:
     radial-gradient(1200px 600px at 20% 10%, rgba(60,120,255,.18), transparent 60%),
     radial-gradient(900px 500px at 80% 20%, rgba(255,120,60,.12), transparent 60%),
