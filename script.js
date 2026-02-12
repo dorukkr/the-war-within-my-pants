@@ -26,55 +26,63 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
 /* ==========================================
    HERO: animated starfield canvas (HiDPI)
 ========================================== */
+/* ==========================================
+   HERO: Animated Gradient Background
+========================================== */
 (() => {
   const canvas = document.getElementById('bg-canvas');
   if (!canvas) return;
-  if (prefersReduced) return; // ağır animasyon, kapat
+  if (prefersReduced) return;
 
   const ctx = canvas.getContext('2d', { alpha: true });
-  let stars = [];
-  const COUNT = 140;
+  let time = 0;
+  
+  // Renkler: Mor, Mavi, Altın (RGB formatında)
+  const colors = [
+    { r: 139, g: 54, b: 215 },   // Mor (cyberpunk)
+    { r: 88, g: 101, b: 242 },   // Mavi
+    { r: 255, g: 211, b: 107 },  // Altın (fantasy)
+    { r: 114, g: 137, b: 218 }   // Açık mavi
+  ];
 
   function resize() {
     const dpr = Math.max(1, window.devicePixelRatio || 1);
-    const cssW = canvas.clientWidth || canvas.parentElement?.clientWidth || window.innerWidth;
+    const cssW = canvas.clientWidth || window.innerWidth;
     const cssH = canvas.clientHeight || 480;
     canvas.style.width = '100%';
     canvas.style.height = '100%';
     canvas.width = Math.round(cssW * dpr);
     canvas.height = Math.round(cssH * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // canvas çizimlerini CSS pikseline göre hizala
-    // yıldızları yeniden dağıt
-    stars = Array.from({ length: COUNT }, () => ({
-      x: Math.random() * cssW,
-      y: Math.random() * cssH,
-      r: Math.random() * 1.6 + 0.4,
-      a: Math.random() * 0.6 + 0.2,
-      vx: (Math.random() - 0.5) * 0.06,
-      vy: (Math.random() - 0.5) * 0.06,
-      ph: Math.random() * Math.PI * 2
-    }));
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   let rafId;
-  function frame(t) {
+  function drawGradientWaves() {
     const w = canvas.clientWidth;
     const h = canvas.clientHeight;
     ctx.clearRect(0, 0, w, h);
-    for (const s of stars) {
-      const tw = Math.sin(t / 900 + s.ph) * 0.25;
-      ctx.globalAlpha = Math.max(0, Math.min(1, s.a + tw));
-      ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-      ctx.fillStyle = '#fff';
-      ctx.fill();
-      s.x += s.vx;
-      s.y += s.vy;
-      if (s.x < -5) s.x = w + 5; if (s.x > w + 5) s.x = -5;
-      if (s.y < -5) s.y = h + 5; if (s.y > h + 5) s.y = -5;
+    
+    // 3 adet animated gradient blob
+    for (let i = 0; i < 3; i++) {
+      const colorIndex = i % colors.length;
+      const c = colors[colorIndex];
+      
+      // Blob pozisyonu (sinüs/kosinüs ile hareket)
+      const x = Math.sin(time * 0.001 + i * 2) * w * 0.3 + w / 2;
+      const y = Math.cos(time * 0.0008 + i * 1.5) * h * 0.3 + h / 2;
+      const radius = 300 + Math.sin(time * 0.002 + i) * 100;
+      
+      // Radial gradient
+      const gradient = ctx.createRadialGradient(x, y, 0, x, y, radius);
+      gradient.addColorStop(0, `rgba(${c.r}, ${c.g}, ${c.b}, 0.15)`);
+      gradient.addColorStop(1, `rgba(${c.r}, ${c.g}, ${c.b}, 0)`);
+      
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, w, h);
     }
-    ctx.globalAlpha = 1;
-    rafId = requestAnimationFrame(frame);
+    
+    time++;
+    rafId = requestAnimationFrame(drawGradientWaves);
   }
 
   // Debounced resize
@@ -87,15 +95,16 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
   };
 
   resize();
-  rafId = requestAnimationFrame(frame);
+  rafId = requestAnimationFrame(drawGradientWaves);
   window.addEventListener('resize', onResize, { passive: true });
 
-  // (İsteğe bağlı) görünürlük sekme değişiminde animasyonu durdur
+  // Visibility change handler
   document.addEventListener('visibilitychange', () => {
     if (document.hidden) cancelAnimationFrame(rafId);
-    else rafId = requestAnimationFrame(frame);
+    else rafId = requestAnimationFrame(drawGradientWaves);
   });
 })();
+
 
 /* ==========================================
    HERO: mouse tilt / parallax on content
@@ -292,82 +301,109 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
 ========================================================= */
 (() => {
   const logo = document.getElementById('guildLogo');
+  /* ==========================================
+   HERO: Floating Particles System
+========================================== */
+(() => {
   const canvas = document.getElementById('logoParticleCanvas');
-  if (!logo || !canvas) return;
-  if (prefersReduced) return; // reduced motion: animasyon yok
+  if (!canvas) return;
+  if (prefersReduced) return;
 
   const ctx = canvas.getContext('2d', { alpha: true });
-  let particles = [];
-  let animationId = null;
-
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resize();
-  window.addEventListener('resize', resize, { passive: true });
-
-  // Particle class
+  const particles = [];
+  const particleCount = 80;
+  
+  // Particle sınıfı
   class Particle {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-      this.vx = (Math.random() - 0.5) * 8;
-      this.vy = (Math.random() - 0.5) * 8 - 2; // yukarı yönlü bias
-      this.life = 1; // 1 = tam, 0 = ölü
-      this.size = Math.random() * 6 + 3;
-      this.color = `hsl(${45 + Math.random() * 15}, 100%, ${60 + Math.random() * 20}%)`;
-      this.gravity = 0.15;
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.size = Math.random() * 3 + 1;
+      this.speedX = (Math.random() - 0.5) * 0.5;
+      this.speedY = (Math.random() - 0.5) * 0.5;
+      this.opacity = Math.random() * 0.5 + 0.3;
+      
+      // Rastgele renk seç (mor, altın, mavi)
+      const colors = [
+        'rgba(139,54,215,',   // Mor
+        'rgba(255,211,107,',  // Altın
+        'rgba(88,101,242,'    // Mavi
+      ];
+      this.color = colors[Math.floor(Math.random() * colors.length)];
     }
-
-    update() {
-      this.x += this.vx;
-      this.y += this.vy;
-      this.vy += this.gravity; // gravity etkisi
-      this.life -= 0.015; // fade out
-      this.vx *= 0.98; // friction
-    }
-
-    draw() {
-      ctx.globalAlpha = Math.max(0, this.life);
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size * this.life, 0, Math.PI * 2);
-      ctx.fillStyle = this.color;
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = this.color;
-      ctx.fill();
-      ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
-    }
-  }
-
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const p = particles[i];
-      p.update();
-      p.draw();
-      if (p.life <= 0) particles.splice(i, 1);
+    update() {
+      this.x += this.speedX;
+      this.y += this.speedY;
+      
+      // Ekran sınırlarında sekme
+      if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
     }
-
-    if (particles.length > 0) {
-      animationId = requestAnimationFrame(animate);
-    } else {
-      animationId = null;
+    
+    draw() {
+      ctx.fillStyle = this.color + this.opacity + ')';
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+      ctx.fill();
     }
   }
+  
+  function resize() {
+    const dpr = Math.max(1, window.devicePixelRatio || 1);
+    const cssW = canvas.clientWidth || window.innerWidth;
+    const cssH = canvas.clientHeight || 480;
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.width = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  
+  // Partikülleri oluştur
+  for (let i = 0; i < particleCount; i++) {
+    particles.push(new Particle());
+  }
+  
+  let rafId;
+  function animateParticles() {
+    const w = canvas.clientWidth;
+    const h = canvas.clientHeight;
+    ctx.clearRect(0, 0, w, h);
+    
+    particles.forEach(particle => {
+      particle.update();
+      particle.draw();
+    });
+    
+    rafId = requestAnimationFrame(animateParticles);
+  }
+  
+  // Debounced resize
+  let rto;
+  const onResize = () => {
+    clearTimeout(rto);
+    rto = setTimeout(() => {
+      resize();
+      // Resize sonrası partikülleri yeniden dağıt
+      particles.forEach(p => {
+        p.x = Math.random() * canvas.width;
+        p.y = Math.random() * canvas.height;
+      });
+    }, 120);
+  };
+  
+  resize();
+  rafId = requestAnimationFrame(animateParticles);
+  window.addEventListener('resize', onResize, { passive: true });
+  
+  // Visibility change handler
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) cancelAnimationFrame(rafId);
+    else rafId = requestAnimationFrame(animateParticles);
+  });
+})();
 
-  logo.addEventListener('click', (e) => {
-    const rect = logo.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    // 40-60 parçacık oluştur
-    const count = 50;
-    for (let i = 0; i < count; i++) {
-      particles.push(new Particle(centerX, centerY));
-    }
 
     if (!animationId) animate();
   });
