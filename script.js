@@ -723,9 +723,8 @@ return {
       );
 
       allMembers = enriched;
-renderPaginatedGrid(); // ← renderGrid yerine bu
-
-      
+      renderPaginatedGrid(); // ← renderGrid yerine bu
+       
       loading.style.display = 'none';
       grid.style.display = 'grid';
 
