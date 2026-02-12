@@ -674,31 +674,21 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
   filter: brightness(1);
 }
 
-/* Expansion Badge (Overlay) */
-.expansion-badge {
+/* Expansion Logo Badge (Resim Overlay) */
+.expansion-logo-badge {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+  top: 12px;
+  right: 12px;
+  width: 70px; /* Logo genişliği */
+  height: auto;
   z-index: 2;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.8));
+  transition: transform 0.3s ease, filter 0.3s ease;
 }
 
-.tww-badge {
-  background: linear-gradient(135deg, rgba(139, 54, 215, 0.9), rgba(89, 34, 165, 0.9));
-  color: #fff;
-}
-
-.midnight-badge {
-  background: linear-gradient(135deg, rgba(41, 128, 185, 0.9), rgba(20, 68, 106, 0.9));
-  color: #fff;
+.raid-banner-wrapper:hover .expansion-logo-badge {
+  transform: scale(1.1);
+  filter: drop-shadow(0 3px 12px rgba(255, 255, 255, 0.3));
 }
 
 /* Responsive: Mobil ve tablet */
@@ -707,6 +697,9 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
     width: calc(100% + 20px);
     margin: -12px -10px 14px -10px;
   }
+.expansion-logo-badge {
+    width: 60px; /* Tablet'te biraz küçült */
+  } 
 }
 
 @media(max-width: 768px) {
@@ -715,9 +708,10 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
     object-fit: cover;
   }
   
-  .expansion-badge {
-    font-size: 0.65rem;
-    padding: 4px 10px;
+  .expansion-logo-badge {
+    width: 50px; /* Mobilde daha küçük */
+    top: 8px;
+    right: 8px;
   }
 }
 
