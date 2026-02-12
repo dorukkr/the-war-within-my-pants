@@ -214,63 +214,6 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
 })();
 
 
-/* ===== Path-based section routing ("/home", "/members", "/raids", "/media") ===== */
-(() => {
-  // URL yolu -> section id eşlemesi
-  const PATH_TO_SECTION = {
-    "/": "hero",
-    "/home": "hero",
-    "/members": "members",
-    "/raids": "raids",
-    "/media": "media"
-  };
-
-  // Bu sayfa ana sayfa mı? (hero var mı?)
-  const isHome = !!document.getElementById("hero");
-
-  function routeToSectionFromPath() {
-    const id = PATH_TO_SECTION[location.pathname];
-    if (!id) return; // yönetmediğimiz bir path
-    const el = document.getElementById(id);
-    if (!el) return;
-
-    // fixed navbar için ~70px offset
-    const top = el.getBoundingClientRect().top + window.scrollY - 70;
-    window.scrollTo({ top, behavior: "smooth" });
-
-    // nav aktiflik
-    document.querySelectorAll(".nav a").forEach(a => a.classList.remove("is-active"));
-    const active = document.querySelector(`.nav a[href="${location.pathname}"]`);
-    if (active) active.classList.add("is-active");
-  }
-
-  // Sadece ana sayfada menü tıklamalarını SPA gibi ele al
-  if (isHome) {
-    document.querySelectorAll('.nav a[href^="/"]').forEach(a => {
-      a.addEventListener("click", (e) => {
-        const href = a.getAttribute("href");
-        if (href && PATH_TO_SECTION[href]) {
-          e.preventDefault();                 // tam sayfa yenilemeyi engelle
-          history.pushState({}, "", href);    // URL'i güncelle
-          routeToSectionFromPath();           // ilgili bölüme kaydır
-        }
-      });
-    });
-  }
-
-  // İlk yüklemede de path'e göre kaydır (özellikle /members vb. ile gelindiyse)
-  const ready = () => routeToSectionFromPath();
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", ready, { once: true });
-  } else {
-    ready();
-  }
-
-  // Geri/ileri tuşları
-  window.addEventListener("popstate", routeToSectionFromPath);
-})();
-
-
 /* =========================================================
    Progress Bar Animation (Viewport trigger)
 ========================================================= */
