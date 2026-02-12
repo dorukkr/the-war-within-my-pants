@@ -413,6 +413,63 @@ let searchQuery = ''; // YENİ: Arama terimi
 let currentPage = 1; // YENİ: Pagination
 const membersPerPage = 12; // YENİ: Sayfa başına üye sayısı
 
+   // Tüm filtreleri uygula (rank + role + search)
+function getFilteredMembers() {
+  let filtered = allMembers;
+
+  // 1. Rank Filter
+  if (currentFilter !== 'all') {
+    filtered = filtered.filter(m => m.rank === currentFilter);
+  }
+
+  // 2. Role Filter (multi-select)
+  if (activeRoles.length > 0 && activeRoles.length < 3) {
+    filtered = filtered.filter(m => activeRoles.includes(m.role));
+  }
+
+  // 3. Search Query
+  if (searchQuery.trim() !== '') {
+    const query = searchQuery.toLowerCase();
+    filtered = filtered.filter(m => m.name.toLowerCase().includes(query));
+  }
+
+  return filtered;
+}
+
+function renderPaginatedGrid() {
+  const filtered = getFilteredMembers();
+  const totalPages = Math.ceil(filtered.length / membersPerPage);
+  const startIdx = (currentPage - 1) * membersPerPage;
+  const endIdx = startIdx + membersPerPage;
+  const pageMembers = filtered.slice(startIdx, endIdx);
+
+  // Render cards
+  renderGrid(pageMembers);
+
+  // Update pagination UI
+  updatePaginationUI(filtered.length, totalPages);
+}
+
+function updatePaginationUI(totalMembers, totalPages) {
+  const paginationDiv = document.getElementById('paginationControls');
+  const prevBtn = document.getElementById('prevPageBtn');
+  const nextBtn = document.getElementById('nextPageBtn');
+  const pageInfo = document.getElementById('pageInfo');
+  const memberCount = document.getElementById('memberCount');
+
+  if (!paginationDiv || !prevBtn || !nextBtn || !pageInfo || !memberCount) return;
+
+  if (totalPages <= 1) {
+    paginationDiv.style.display = 'none';
+  } else {
+    paginationDiv.style.display = 'flex';
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages;
+    pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+    memberCount.textContent = `${totalMembers} member${totalMembers !== 1 ? 's' : ''}`;
+  }
+}
+
 
   // 1. Manuel JSON yükle
   async function loadManualData() {
@@ -597,19 +654,18 @@ return {
   }
 
   // 5. Filtreleme
-  function filterMembers(rank) {
-    currentFilter = rank;
-    const filtered = rank === 'all' 
-      ? allMembers 
-      : allMembers.filter(m => m.rank === rank);
-    renderGrid(filtered);
+ function filterMembers(rank) {
+  currentFilter = rank;
+  currentPage = 1; // Reset pagination
+  renderPaginatedGrid(); // ← Bu satırı değiştir (renderGrid yerine)
 
-    // Aktif butonu güncelle
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.filter === rank);
-      btn.setAttribute('aria-selected', btn.dataset.filter === rank);
-    });
-  }
+  // Aktif butonu güncelle
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.filter === rank);
+    btn.setAttribute('aria-selected', btn.dataset.filter === rank);
+  });
+}
+
 
   // 6. Ana yükleme fonksiyonu
   async function init() {
@@ -631,7 +687,8 @@ return {
       );
 
       allMembers = enriched;
-      renderGrid(allMembers);
+renderPaginatedGrid(); // ← renderGrid yerine bu
+
       
       loading.style.display = 'none';
       grid.style.display = 'grid';
@@ -656,12 +713,70 @@ return {
     }
   }
 
-  // Filter butonları
-  document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      filterMembers(btn.dataset.filter);
-    });
+ // Role Filter Buttons
+document.querySelectorAll('.role-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const role = btn.dataset.role;
+    
+    if (activeRoles.includes(role)) {
+      activeRoles = activeRoles.filter(r => r !== role);
+      btn.classList.remove('active');
+    } else {
+      activeRoles.push(role);
+      btn.classList.add('active');
+    }
+    
+    currentPage = 1; // Reset to first page
+    renderPaginatedGrid();
   });
+});
+
+// Search Input
+const searchInput = document.getElementById('memberSearchInput');
+const clearBtn = document.getElementById('searchClearBtn');
+
+if (searchInput && clearBtn) {
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value;
+    clearBtn.style.display = searchQuery ? 'flex' : 'none';
+    currentPage = 1; // Reset to first page
+    renderPaginatedGrid();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    searchQuery = '';
+    clearBtn.style.display = 'none';
+    currentPage = 1;
+    renderPaginatedGrid();
+  });
+}
+
+// Pagination Buttons
+const prevBtn = document.getElementById('prevPageBtn');
+const nextBtn = document.getElementById('nextPageBtn');
+
+if (prevBtn) {
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      renderPaginatedGrid();
+      document.getElementById('rosterGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
+if (nextBtn) {
+  nextBtn.addEventListener('click', () => {
+    const totalPages = Math.ceil(getFilteredMembers().length / membersPerPage);
+    if (currentPage < totalPages) {
+      currentPage++;
+      renderPaginatedGrid();
+      document.getElementById('rosterGrid').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+}
+
 
   // Sayfa yüklendiğinde başlat
   if (document.readyState === 'loading') {
