@@ -241,6 +241,17 @@
       "rank": "Trial",
       "type": "Main",
       "notes": "Trial DPS"
+    },
+    {
+      "name": "Tooltrick",
+      "realm": "Argent Dawn",
+      "region": "eu",
+      "classes": ["Warlock", "Hunter"],
+      "mainClass": "Warlock",
+      "role": "DPS",
+      "rank": "Trial",
+      "type": "Main",
+      "notes": "Trial DPS"
     }
   ]
 }
