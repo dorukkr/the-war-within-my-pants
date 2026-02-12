@@ -120,26 +120,32 @@
 <!-- YENİ: Role Filters + Search Bar -->
 <div class="roster-controls">
   <!-- Role Filter Buttons (Multi-Select) -->
-  <div class="role-filters">
-    <button class="role-filter-btn active" data-role="Tank">
-      <svg class="role-icon" viewBox="0 0 24 24" width="20" height="20">
-        <path fill="currentColor" d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
-      </svg>
-      <span>Tank</span>
-    </button>
-    <button class="role-filter-btn active" data-role="Healer">
-      <svg class="role-icon" viewBox="0 0 24 24" width="20" height="20">
-        <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
-      </svg>
-      <span>Healer</span>
-    </button>
-    <button class="role-filter-btn active" data-role="DPS">
-      <svg class="role-icon" viewBox="0 0 24 24" width="20" height="20">
-        <path fill="currentColor" d="M12 2L2 12l10 10 10-10L12 2zm0 3.83L18.17 12 12 18.17 5.83 12 12 5.83z"/>
-      </svg>
-      <span>DPS</span>
-    </button>
-  </div>
+ <div class="role-filters">
+  <button class="role-filter-btn active" data-role="All">
+    <svg class="role-icon" viewBox="0 0 24 24" width="20" height="20">
+      <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+    </svg>
+    <span>All</span>
+  </button>
+  <button class="role-filter-btn" data-role="Tank">
+    <svg class="role-icon" viewBox="0 0 24 24" width="20" height="20">
+      <path fill="currentColor" d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5z"/>
+    </svg>
+    <span>Tank</span>
+  </button>
+  <button class="role-filter-btn" data-role="Healer">
+    <svg class="role-icon" viewBox="0 0 24 24" width="20" height="20">
+      <path fill="currentColor" d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+    </svg>
+    <span>Healer</span>
+  </button>
+  <button class="role-filter-btn" data-role="DPS">
+    <svg class="role-icon" viewBox="0 0 24 24" width="20" height="20">
+      <path fill="currentColor" d="M12 2L2 12l10 10 10-10L12 2zm0 3.83L18.17 12 12 18.17 5.83 12 12 5.83z"/>
+    </svg>
+    <span>DPS</span>
+  </button>
+</div>
 
   <!-- Search Bar -->
   <div class="search-bar-wrapper">
