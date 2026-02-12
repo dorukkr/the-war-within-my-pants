@@ -121,11 +121,10 @@ a:focus-visible,
 ========================= */
 main{ height:auto; /* overflow-y:auto; */ }
 section{
-  min-height:100vh;
-  position:relative;
-  display:flex; align-items:center; justify-content:center; text-align:center;
-  padding:100px 20px;
-  scroll-margin-top: 80px; /* fixed navbar için */
+  min-height: 100vh;
+  position: relative;
+  padding: 100px 20px;
+  scroll-margin-top: 80px;
 }
 
 /* =========================
@@ -194,11 +193,16 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
   min-height: 100vh;
   overflow: hidden;
   padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   background:
     radial-gradient(1200px 600px at 20% 10%, rgba(60,120,255,.18), transparent 60%),
     radial-gradient(900px 500px at 80% 20%, rgba(255,120,60,.12), transparent 60%),
     linear-gradient(180deg, #0f2027, #203a43, #2c5364);
 }
+
 #bg-canvas { 
   position: absolute; 
   top: 0;
@@ -527,11 +531,13 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 ========================= */
 #members {
   position: relative;
-  z-index: 5; /* Hero'dan yüksek */
+  z-index: 5;
+  display: block;
   padding: 100px 20px 80px;
   background: url('images/members-bg-aurora.png') center/cover no-repeat;
   min-height: 100vh;
 }
+
 
 .members-container {
   max-width: 1400px;
