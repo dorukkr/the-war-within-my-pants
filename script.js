@@ -713,16 +713,19 @@ renderPaginatedGrid(); // ← renderGrid yerine bu
     }
   }
 
- // Role Filter Buttons
+// Role Filter Buttons (Single-Select)
 document.querySelectorAll('.role-filter-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const role = btn.dataset.role;
     
-    if (activeRoles.includes(role)) {
-      activeRoles = activeRoles.filter(r => r !== role);
-      btn.classList.remove('active');
+    // Eğer aynı butona tıklandıysa, tüm rolleri göster (reset)
+    if (activeRoles.length === 1 && activeRoles[0] === role) {
+      activeRoles = ['Tank', 'Healer', 'DPS'];
+      document.querySelectorAll('.role-filter-btn').forEach(b => b.classList.add('active'));
     } else {
-      activeRoles.push(role);
+      // Sadece tıklanan rolü seç
+      activeRoles = [role];
+      document.querySelectorAll('.role-filter-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
     
@@ -730,6 +733,7 @@ document.querySelectorAll('.role-filter-btn').forEach(btn => {
     renderPaginatedGrid();
   });
 });
+
 
 // Search Input
 const searchInput = document.getElementById('memberSearchInput');
