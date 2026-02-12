@@ -777,13 +777,19 @@ if (nextBtn) {
   });
 }
 
+// YENİ: Rank Filter Buttons (All Members, Officers, Members, Trials)
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    filterMembers(btn.dataset.filter);
+  });
+});
 
-  // Sayfa yüklendiğinde başlat
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-        init();
-  }
+// Sayfa yüklendiğinde başlat
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
 })();
 
 /* =========================================================
