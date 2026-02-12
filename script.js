@@ -407,7 +407,11 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
   ];
 
   let allMembers = [];
-  let currentFilter = 'all';
+let currentFilter = 'all'; // Rank filter (mevcut)
+let activeRoles = ['Tank', 'Healer', 'DPS']; // YENİ: Role filter (multi-select)
+let searchQuery = ''; // YENİ: Arama terimi
+let currentPage = 1; // YENİ: Pagination
+const membersPerPage = 12; // YENİ: Sayfa başına üye sayısı
 
 
   // 1. Manuel JSON yükle
