@@ -428,6 +428,83 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 /* Scroll hint */
 .scroll-indicator{ position:absolute; bottom:16px; left:50%; transform:translateX(-50%); font-size:.9rem; opacity:.85; letter-spacing:.12em; animation:bounce 1.8s infinite; }
 @keyframes bounce{ 0%,100%{ transform: translate(-50%,0);} 50%{ transform: translate(-50%,-8px);} }
+/* =========================
+   About Us Section
+========================= */
+.about-section {
+  padding: 100px 20px;
+  background: linear-gradient(180deg, #0d0d1a 0%, #1a0d2e 50%, #0d0d1a 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  text-align: center;
+  margin-bottom: 60px;
+  background: linear-gradient(135deg, #fff, #8b36d7);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.about-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.about-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(139, 54, 215, 0.3);
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  transition: all 0.4s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.about-card:hover {
+  transform: translateY(-10px);
+  border-color: rgba(139, 54, 215, 0.6);
+  box-shadow: 0 15px 40px rgba(139, 54, 215, 0.4);
+}
+
+.about-icon {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 0 10px rgba(255, 211, 107, 0.6));
+}
+
+.about-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #ffd36b;
+}
+
+.about-card p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@media (max-width: 768px) {
+  .about-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   Members / Roster
+========================= */
+
 
 /* =========================
    Members / Roster
