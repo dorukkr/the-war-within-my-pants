@@ -189,10 +189,6 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 }
 
 /* Canvas layer üzerine çıkar (particles için) */
-#bg-canvas,
-#logoParticleCanvas {
-  z-index: 2 !important;
-}
 #hero{
   position: relative;
   min-height: 100vh;
@@ -203,7 +199,15 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
     radial-gradient(900px 500px at 80% 20%, rgba(255,120,60,.12), transparent 60%),
     linear-gradient(180deg, #0f2027, #203a43, #2c5364);
 }
-#bg-canvas{ position:absolute; inset:0; width:100%; height:100%; z-index:0; }
+#bg-canvas { 
+  position: absolute; 
+  top: 0;
+  left: 0;
+  width: 100%; 
+  height: 100%; 
+  z-index: 0;
+}
+
 .hero-layer{ position:absolute; width:140%; left:50%; transform:translateX(-50%); pointer-events:none; filter:blur(1px);}
 .layer-back { bottom:-8vh; z-index:1; opacity:.55; }
 .layer-front{ bottom:-4vh; z-index:2; opacity:.65; filter:blur(0.5px); }
