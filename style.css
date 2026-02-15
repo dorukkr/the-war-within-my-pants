@@ -1923,3 +1923,11 @@ body:has(#hero) .site-footer {
 body:not(:has(#hero)) .site-footer {
   display: none;
 }
+
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+}
