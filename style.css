@@ -1931,3 +1931,25 @@ body:not(:has(#hero)) .site-footer {
   width: 100%;
   z-index: 9999;
 }
+
+/* ===================================
+   About & Apply Center Alignment
+=================================== */
+
+.about-content,
+.apply-content {
+  text-align: center;
+}
+
+.about-content p,
+.apply-content p,
+.about-content ul,
+.apply-content ul {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.about-content ul {
+  list-style-position: inside;
+}
