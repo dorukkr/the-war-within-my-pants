@@ -1184,10 +1184,16 @@ p { font-size:1.1rem; color:#e9e9e9; margin:0 auto 22px; max-width:760px; }
 /* =========================
    Apply Form (NEW)
 ========================= */
-#apply,
-#apply .content-box { 
-  text-align: left !important; 
+#apply {
+  display: flex !important;
+  justify-content: center;
+}
+
+#apply .content-box {
+  text-align: left !important;
   display: block !important;
+  margin-left: auto;
+  margin-right: auto;
 }
 .req { color:#ffd36b; margin-left:4px; }
 .form-grid{ display:grid; gap:14px; grid-template-columns:1fr 1fr; margin:14px 0; }
