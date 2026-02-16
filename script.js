@@ -214,6 +214,41 @@ const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
 })();
 
 
+
+/* =========================================================
+   Raids: Expansion filter (The War Within / Midnight)
+========================================================= */
+(() => {
+  const raidsSection = document.getElementById('raids');
+  if (!raidsSection) return;
+
+  const filters = Array.from(raidsSection.querySelectorAll('.expansion-filter'));
+  const items = Array.from(raidsSection.querySelectorAll('.t-item[data-expansion]'));
+  if (!filters.length || !items.length) return;
+
+  function applyFilter(expansion) {
+    items.forEach((item) => {
+      const itemExpansion = item.dataset.expansion;
+      const show = expansion === 'all' || itemExpansion === expansion || itemExpansion === 'all';
+      item.classList.toggle('is-hidden', !show);
+    });
+
+    filters.forEach((btn) => {
+      const active = btn.dataset.expansionFilter === expansion;
+      btn.classList.toggle('active', active);
+      btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+    });
+  }
+
+  filters.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      applyFilter(btn.dataset.expansionFilter || 'all');
+    });
+  });
+
+  applyFilter('all');
+})();
+
 /* =========================================================
    Progress Bar Animation (Viewport trigger)
 ========================================================= */
