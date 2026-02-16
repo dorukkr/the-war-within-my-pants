@@ -51,10 +51,22 @@
     <div class="timeline-container">
       <h2 class="raids-title">Raids & Mythic+</h2>
       
+      <div class="expansion-filters" role="group" aria-label="Filter raids by expansion">
+        <button class="expansion-filter active" type="button" data-expansion-filter="all" aria-pressed="true">All</button>
+        <button class="expansion-filter" type="button" data-expansion-filter="the-war-within" aria-pressed="false">
+          <img src="images/tww-logo.png" alt="The War Within" loading="lazy" onerror="this.style.display='none'">
+          <span>The War Within</span>
+        </button>
+        <button class="expansion-filter" type="button" data-expansion-filter="midnight" aria-pressed="false">
+          <img src="images/midnight-logo.png" alt="Midnight" loading="lazy" onerror="this.style.display='none'">
+          <span>Midnight</span>
+        </button>
+      </div>
+
       <div class="timeline">
         <div class="t-dot"></div>
         <!-- Liberation of Undermine -->
-        <div class="t-item left">
+        <div class="t-item left" data-expansion="the-war-within">
           <div class="raid-banner-wrapper">
             <img src="images/liberation-of-undermine-banner.png" alt="Liberation of Undermine" class="raid-banner" loading="lazy" onerror="this.style.display='none'">
             <img src="images/tww-logo.png" alt="The War Within" class="expansion-logo-badge" loading="lazy" onerror="this.style.display='none'">
@@ -66,7 +78,7 @@
         </div>
 
         <!-- Manaforge Omega -->
-        <div class="t-item right">
+        <div class="t-item right" data-expansion="the-war-within">
           <div class="raid-banner-wrapper">
             <img src="images/manaforge-omega-banner.png" alt="Manaforge Omega" class="raid-banner" loading="lazy" onerror="this.style.display='none'">
             <img src="images/tww-logo.png" alt="The War Within" class="expansion-logo-badge" loading="lazy" onerror="this.style.display='none'">
@@ -78,7 +90,7 @@
         </div>
 
         <!-- The Voidspire -->
-        <div class="t-item left">
+        <div class="t-item left" data-expansion="the-war-within">
           <div class="raid-banner-wrapper">
             <img src="images/the-voidspire-banner.png" alt="The Voidspire" class="raid-banner" loading="lazy" onerror="this.style.display='none'">
             <img src="images/midnight-logo.png" alt="Midnight" class="expansion-logo-badge" loading="lazy" onerror="this.style.display='none'">
@@ -90,7 +102,7 @@
         </div>
 
         <!-- The Dreamrift -->
-        <div class="t-item right">
+        <div class="t-item right" data-expansion="the-war-within">
           <div class="raid-banner-wrapper">
             <img src="images/the-dreamrift-banner.png" alt="The Dreamrift" class="raid-banner" loading="lazy" onerror="this.style.display='none'">
             <img src="images/midnight-logo.png" alt="Midnight" class="expansion-logo-badge" loading="lazy" onerror="this.style.display='none'">
@@ -102,7 +114,7 @@
         </div>
 
         <!-- March of Quel'Danas -->
-        <div class="t-item left">
+        <div class="t-item left" data-expansion="the-war-within">
           <div class="raid-banner-wrapper">
             <img src="images/march-of-queldanas-banner.png" alt="March of Quel'Danas" class="raid-banner" loading="lazy" onerror="this.style.display='none'">
             <img src="images/midnight-logo.png" alt="Midnight" class="expansion-logo-badge" loading="lazy" onerror="this.style.display='none'">
@@ -114,7 +126,7 @@
         </div>
 
         <!-- Season M+ Push -->
-        <div class="t-item right">
+        <div class="t-item right" data-expansion="all">
           <h4>Season M+ Push</h4>
           <p style="margin-top:10px; font-size:0.95rem; color:#ccc;">Pushing keys, helping guildies climb rating!</p>
         </div>
