@@ -56,17 +56,6 @@
       "notes": "Main Healer"
     },
     {
-      "name": "Mímð",
-      "realm": "Ravencrest",
-      "region": "eu",
-      "classes": ["Demon Hunter"],
-      "mainClass": "Demon Hunter",
-      "role": "DPS",
-      "rank": "Member",
-      "type": "Main",
-      "notes": "Main DPS"
-    },
-    {
       "name": "Hirsedudu",
       "realm": "Antonidas",
       "region": "eu",
