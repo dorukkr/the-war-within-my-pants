@@ -150,7 +150,7 @@
       "classes": ["Warrior", "Shaman", "Priest", "Demon Hunter", "Death Knight"],
       "mainClass": "Warrior",
       "role": "Tank",
-      "rank": "Member",
+      "rank": "Officer",
       "type": "Main",
       "notes": "Main Tank"
     },
